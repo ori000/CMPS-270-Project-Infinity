@@ -50,6 +50,8 @@
 // };
 
 int hour=0;minute=0;second=0;flag=0;
+int input[2];
+int matrix[5][6];
 
 void delay(ms)
 {
@@ -74,11 +76,64 @@ int counter()
         ++second;
     }
 }
+//Check Horizontal for Winning
+void checkH(int r, int c)
+{
+    for(int i = 0; i <= 5; i++)
+    {
+        for(int j = 0; j <= 6; j++)
+        {
+            if(matrix[r][c] == 1 && matrix[r][c+1] == 1 && matrix[r][c+2] == 1 && matrix[r][c+3] == 1)
+                printf("Player 1 won!");
+            else if(matrix[r][c] == 2 && matrix[r][c+1] == 2 && matrix[r][c+2] == 2 && matrix[r][c+3] == 2)
+                printf("Player 2 won!");
+        }
+    }
+}
+//Check Vertical for Winning
+void checkV(int r, int c)
+{
+    for(int i = 0; i <= 5; i++)
+    {
+        for(int j = 0; j <= 6; j++)
+        {
+            if(matrix[r][c] == 1 && matrix[r+1][c] == 1 && matrix[r+2][c] == 1 && matrix[r+3][c] == 1)
+                printf("Player 1 won!");
+            else if(matrix[r][c] == 2 && matrix[r+1][c] == 2 && matrix[r+2][c] == 2 && matrix[r+3][c] == 2)
+                printf("Player 2 won!");
+        }
+    }
+}
+//Check Oblique (ascending & descending) for Winning
+void checkO_Asc(int r, int c)
+{
+    for(int i = 0; i <= 5; i++)
+    {
+        for(int j = 0; j <= 6; j++)
+        {
+            if(matrix[r][c] == 1 && matrix[r-1][c+1] == 1 && matrix[r-2][c+2] == 1 && matrix[r-3][c+3] == 1)
+                printf("Player 1 won!");
+            else if(matrix[r][c] == 2 && matrix[r-1][c+1] == 2 && matrix[r-2][c+2] == 2 && matrix[r-3][c+3] == 2)
+                printf("Player 2 won!");
+        }
+    }
+}
+void checkO_Desc(int r, int c)
+{
+    for(int i = 0; i <= 5; i++)
+    {
+        for(int j = 0; j <= 6; j++)
+        {
+            if(matrix[r][c] == 1 && matrix[r-1][c-1] == 1 && matrix[r-2][c-2] == 1 && matrix[r-3][c-3] == 1)
+                printf("Player 1 won!");
+            else if(matrix[r][c] == 2 && matrix[r-1][c-1] == 2 && matrix[r-2][c-2] == 2 && matrix[r-3][c-3] == 2)
+                printf("Player 2 won!");
+        }
+    }
+}
 
 int main()
 {
-    int input[2];
-    int matrix[5][6];
     for(int i = 0; i <= 5; i++)
     {
         for (int j = 0; j <=6; j++)
