@@ -59,6 +59,18 @@ void delay(ms)
     while(timeDelay > clock());
 }
 
+void printMatrix(int matrix[5][6])
+{
+    for(int i = 0; i <= 5; i++)
+    {
+        printf("|");
+        for(int j = 0; j <= 6; j++)
+        {
+            printf("%d",matrix[i][j]+"|");
+        }
+    }
+}
+
 int counter()
 {
     while(!kbhit() && flag == 0)
@@ -179,6 +191,7 @@ int main()
             if(j == input[1])
             {
                 matrix[i][j] = 1;
+                printMatrix(matrix[i][j]);
                 checkH(i,j);
                 checkV(i,j);
                 checkO_Asc(i,j);
@@ -200,7 +213,7 @@ int main()
             if(j == input[1])
             {
                 matrix[i][j] = 2;
-                matrix[i][j] = 2;
+                printMatrix(matrix[i][j]);
                 checkH(i,j);
                 checkV(i,j);
                 checkO_Asc(i,j);
