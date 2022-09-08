@@ -96,15 +96,17 @@ void checkH(int r, int c)
     {
         for(int j = 0; j <= 6; j++)
         {
-            if(matrix[r][c] == 1 && matrix[r][c+1] == 1 && matrix[r][c+2] == 1 && matrix[r][c+3] == 1)
+            if(matrix[i][j] == 1 && matrix[i][j+1] == 1 && matrix[i][j+2] == 1 && matrix[i][j+3] == 1)
             {
                 printf("Player 1 won!");
                 checkWinPlayer1 = 1;
+                break;
             }
-            else if(matrix[r][c] == 2 && matrix[r][c+1] == 2 && matrix[r][c+2] == 2 && matrix[r][c+3] == 2)
+            else if(matrix[i][j] == 2 && matrix[i][j+1] == 2 && matrix[i][j+2] == 2 && matrix[i][j+3] == 2)
             {
                 printf("Player 2 won!");
                 checkWinPlayer2 = 1;
+                break;
             }
         }
     }
@@ -116,15 +118,17 @@ void checkV(int r, int c)
     {
         for(int j = 0; j <= 6; j++)
         {
-            if(matrix[r][c] == 1 && matrix[r+1][c] == 1 && matrix[r+2][c] == 1 && matrix[r+3][c] == 1)
+            if(matrix[i][j] == 1 && matrix[i+1][j] == 1 && matrix[i+2][j] == 1 && matrix[i+3][j] == 1)
             {
                 printf("Player 1 won!");
                 checkWinPlayer1 = 1;
+                break;
             }
-            else if(matrix[r][c] == 2 && matrix[r+1][c] == 2 && matrix[r+2][c] == 2 && matrix[r+3][c] == 2)
+            else if(matrix[i][j] == 2 && matrix[i+1][j] == 2 && matrix[i+2][j] == 2 && matrix[i+3][j] == 2)
             {    
                 printf("Player 2 won!");
                 checkWinPlayer2 = 1;
+                break;
             }
         }
     }
@@ -136,15 +140,17 @@ void checkO_Asc(int r, int c)
     {
         for(int j = 0; j <= 6; j++)
         {
-            if(matrix[r][c] == 1 && matrix[r-1][c+1] == 1 && matrix[r-2][c+2] == 1 && matrix[r-3][c+3] == 1)
+            if(matrix[i][j] == 1 && matrix[i-1][j+1] == 1 && matrix[i-2][j+2] == 1 && matrix[i-3][j+3] == 1)
             {
                 printf("Player 1 won!");
                 checkWinPlayer1 = 1;
+                break;
             }
-            else if(matrix[r][c] == 2 && matrix[r-1][c+1] == 2 && matrix[r-2][c+2] == 2 && matrix[r-3][c+3] == 2)
+            else if(matrix[i][j] == 2 && matrix[i-1][j+1] == 2 && matrix[i-2][j+2] == 2 && matrix[i-3][j+3] == 2)
             {
                 printf("Player 2 won!");
                 checkWinPlayer2 = 1;
+                break;
             }
         }
     }
@@ -155,15 +161,17 @@ void checkO_Desc(int r, int c)
     {
         for(int j = 6; j >= 0; j--)
         {
-            if(matrix[r][c] == 1 && matrix[r-1][c-1] == 1 && matrix[r-2][c-2] == 1 && matrix[r-3][c-3] == 1)
+            if(matrix[i][j] == 1 && matrix[i-1][j-1] == 1 && matrix[i-2][j-2] == 1 && matrix[i-3][j-3] == 1)
             {
                 printf("Player 1 won!");
                 checkWinPlayer1 = 1;
+                break;
             }
-            else if(matrix[r][c] == 2 && matrix[r-1][c-1] == 2 && matrix[r-2][c-2] == 2 && matrix[r-3][c-3] == 2)
+            else if(matrix[i][j] == 2 && matrix[i-1][j-1] == 2 && matrix[i-2][j-2] == 2 && matrix[i-3][j-3] == 2)
             {
                 printf("Player 2 won!");
                 checkWinPlayer2 = 1;
+                break;
             }
         }
     }
