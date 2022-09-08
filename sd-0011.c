@@ -51,7 +51,7 @@
 
 int hour=0;minute=0;second=0;flag=0;
 int input[2];
-int matrix[5][6];
+int matrix[6][7];
 
 void delay(ms)
 {
@@ -59,14 +59,15 @@ void delay(ms)
     while(timeDelay > clock());
 }
 
-void printMatrix(int matrix[5][6])
+void printMatrix(int matrix[6][7])
 {
     for(int i = 0; i <= 5; i++)
     {
         printf("|");
         for(int j = 0; j <= 6; j++)
         {
-            printf("%d",matrix[i][j]+"|");
+            printf("%d",matrix[i][j]);
+            printf("|");
         }
     }
 }
@@ -131,7 +132,7 @@ void checkV(int r, int c)
 //Check Oblique (ascending & descending) for Winning
 void checkO_Asc(int r, int c)
 {
-    for(int i = 0; i <= 5; i++)
+    for(int i = 5; i >= 0; i--)
     {
         for(int j = 0; j <= 6; j++)
         {
@@ -150,9 +151,9 @@ void checkO_Asc(int r, int c)
 }
 void checkO_Desc(int r, int c)
 {
-    for(int i = 0; i <= 5; i++)
+    for(int i = 5; i >= 0; i--)
     {
-        for(int j = 0; j <= 6; j++)
+        for(int j = 6; j >= 0; j--)
         {
             if(matrix[r][c] == 1 && matrix[r-1][c-1] == 1 && matrix[r-2][c-2] == 1 && matrix[r-3][c-3] == 1)
             {
@@ -178,7 +179,7 @@ int main()
         }
     }
 
-    while(minute < 20)
+    while(minute < 20 && checkWinPlayer1 == 0 && checkWinPlayer2 == 0)
     counter();
     {
     printf("Player 1, where do you want to place your chip? (Insert row,column)" );
