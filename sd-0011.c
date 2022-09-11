@@ -89,12 +89,12 @@ int counter()
         ++second;
     }
 }
-//Check Horizontal for Winning
+//Check Horizontal
 void checkH(int r, int c)
 {
     for(int i = 0; i <= 5; i++)
     {
-        for(int j = 0; j <= 6; j++)
+        for(int j = 0; j <= 3; j++)
         {
             if(matrix[i][j] == 1 && matrix[i][j+1] == 1 && matrix[i][j+2] == 1 && matrix[i][j+3] == 1)
             {
@@ -111,12 +111,12 @@ void checkH(int r, int c)
         }
     }
 }
-//Check Vertical for Winning
+//Check Vertical
 void checkV(int r, int c)
 {
-    for(int i = 0; i <= 5; i++)
+    for(int j = 0; j <= 6; j++)
     {
-        for(int j = 0; j <= 6; j++)
+        for(int i = 0; i <= 2; i++)
         {
             if(matrix[i][j] == 1 && matrix[i+1][j] == 1 && matrix[i+2][j] == 1 && matrix[i+3][j] == 1)
             {
@@ -133,6 +133,27 @@ void checkV(int r, int c)
         }
     }
 }
+
+/*
+    ASC
+
+    i=3j=0, i=2j=1, i=1j=2, i=0j=3
+    i=4j=0, i=3j=1, i=2j=2, i=1j=3, i=0j=4
+    i=5j=0, i=4j=1, i=3j=2, i=2j=3, i=1j=4, i=0j=5
+    i=5j=1, i=4j=2, i=3j=3, i=2j=4, i=1j=5, i=0j=6
+    i=5j=2, i=4j=3, i=3j=4, i=2j=5, i=1j=6
+    i=5j=3, i=4j=2, i=3j=1, i=2j=0
+
+    DESC
+
+    i=0j=3, i=1j=4, i=2j=5, i=3j=6
+    i=0j=2, i=1j=3, i=2j=4, i=3j=5, i=4j=6
+    i=0j=1, i=1j=2, i=2j=3, i=3j=4, i=4j=5, i=5j=6
+    i=0j=0, i=1j=1, i=2j=2, i=3j=3, i=4j=4, i=5j=5, i=6j=6
+    i=1j=0, i=2j=1, i=3j=2, i=4j=3, i=5j=4
+    i=2j=0, i=3j=1, i=4j=2,i=5,j=3
+*/
+
 //Check Oblique (ascending & descending) for Winning
 void checkO_Asc(int r, int c)
 {
