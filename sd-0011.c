@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-// #include <conio.h>
+#include <conio.h>
 
 // for next version:
 // working on time and tie case -> osama
 // finishing the diagonal check -> Ayla
 // work on pre-game: the toss and players names -> iyad
 
-
-// int hour=0;minute=0;second=0;flag=0;
+int hour=0,minute=0,second=0;
 
 #define ROWS    6
 #define COLS    7
@@ -23,11 +22,16 @@ int selected = 0;
 
 void add_token();
 
-// void delay(ms)
-// {
-//     clock_t timeDelay = ms + clock();
-//     while(timeDelay > clock());
-// }
+int timeCalc(int time)
+{
+
+}
+
+void delay(int ms)
+{
+    clock_t timeDelay = ms + clock();
+    while(timeDelay > clock());
+}
 
 // int counter()
 // {
@@ -46,6 +50,15 @@ void add_token();
 //         ++second;
 //     }
 // }
+int counter(){
+    while(minute < 5){     //keep looping while the user didn't hit any key and flag is 0
+                if(second > 59){         //after second is greater than 59, reset second and increase 1 minute
+                    second = 0;++minute;
+                    }
+                    delay(1000);second += 1;
+        }
+        return 0;
+}
 
 
 //fill the array with empty values
@@ -143,7 +156,7 @@ int main()
 {
     createMatrix();
     display();
-        while(1){
+        while(counter()){
 
             printf("Player %d, your turn!\n", token);
             selecting();
@@ -160,6 +173,7 @@ int main()
                 break;  
             }   
         }
+        printf("Time's up!");
     return 0;
 }
         
