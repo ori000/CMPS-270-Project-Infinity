@@ -145,7 +145,7 @@ int main()
     display();
         while(1){
 
-            printf("Player %c, your turn!\n", token);
+            printf("Player %d, your turn!\n", token);
             selecting();
             printf("\n\n");
             display();
