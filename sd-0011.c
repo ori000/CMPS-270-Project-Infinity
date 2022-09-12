@@ -143,13 +143,38 @@ int CheckVertical(int token){
         }
     }
 }
-// CheckDiagonals(token){
 
-// }
+void CheckDiagonals(token){
+    int counter;
+    
+    for (int i = 0; i < ROWS; i++)
+    {
+        if(i<3){                    // this is for the lower diagonals, that will check whether there are 4 dots connected diagonally
+            for(int j =0; j<4;j++){
+                counter = 0;
+                for(int a = 0; a<4;++a){
+                    if (matrix[i+a][j+a] == token) counter++;
+                }
+                if (counter == 4) return 1;
 
+            }
+        }
+        else{               // this is for the lower diagonals, that will check whether there are 4 dots connected diagonally
+            for (int a = 0; a < count; i++)
+            {
+                counter = 0;
+                for(int a = 0; a<4;++a){
+                    if (matrix[i-a][j+a] == token) counter++;
+                }
+                if (counter == 4) return 1;
+            }
+            
+        }
+    }
+    
+}
 int check(int token){
-    return CheckHorizontal(token) || CheckVertical(token);
-    // CheckDiagonals(token);
+    return CheckHorizontal(token) || CheckVertical(token) || CheckDiagonals(token);
 }
 
 int main()
