@@ -50,13 +50,13 @@ void delay(int ms)
 //     }
 // }
 int timeCounter(){
-    while(minute < 5){     //keep looping while the user didn't hit any key and flag is 0
+    while(minute < 3){     //keep looping while the user didn't hit any key and flag is 0
                 if(second > 59){         //after second is greater than 59, reset second and increase 1 minute
                     second = 0;++minute;
                     }
                     delay(1000);second += 1;
         }
-        return 1;
+        return 0;
 }
 
 
@@ -199,6 +199,11 @@ int main()
                 printf("\n\nPlayer 2 wins!\n\n");
                 break;  
             }   
+            else if(check(1) && check(2))
+            {
+                printf("\n\nTie!\n\n");
+                break;
+            }
         }
         printf("Time's up!");
     return 0;
