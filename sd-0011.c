@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <conio.h>
+// #include <conio.h>
 
 // for next version:
-// working on time and tie case -> osama
-// finishing the diagonal check -> Ayla
+// osama: plz check the timer again
 // work on pre-game: the toss and players names -> iyad
 
 int hour=0,minute=0,second=0;
@@ -50,14 +49,14 @@ void delay(int ms)
 //         ++second;
 //     }
 // }
-int counter(){
+int timeCounter(){
     while(minute < 5){     //keep looping while the user didn't hit any key and flag is 0
                 if(second > 59){         //after second is greater than 59, reset second and increase 1 minute
                     second = 0;++minute;
                     }
                     delay(1000);second += 1;
         }
-        return 0;
+        return 1;
 }
 
 
@@ -125,6 +124,7 @@ int CheckHorizontal(int token){
         }
 
     }
+    return 0;
 }
 
 int CheckVertical(int token){
@@ -142,9 +142,11 @@ int CheckVertical(int token){
             if (counter == 4) return 1;
         }
     }
+    return 0;
+
 }
 
-void CheckDiagonals(token){
+int CheckDiagonals(int token){
     int counter;
     
     for (int i = 0; i < ROWS; i++)
@@ -160,10 +162,10 @@ void CheckDiagonals(token){
             }
         }
         else{               // this is for the lower diagonals, that will check whether there are 4 dots connected diagonally
-            for (int a = 0; a < count; i++)
+            for (int j = 0; j < 4; j++)
             {
                 counter = 0;
-                for(int a = 0; a<4;++a){
+                for(int a = 0; a < 4;++a){
                     if (matrix[i-a][j+a] == token) counter++;
                 }
                 if (counter == 4) return 1;
@@ -171,7 +173,7 @@ void CheckDiagonals(token){
             
         }
     }
-    
+    return 0;
 }
 int check(int token){
     return CheckHorizontal(token) || CheckVertical(token) || CheckDiagonals(token);
@@ -181,7 +183,7 @@ int main()
 {
     createMatrix();
     display();
-        while(counter()){
+        while(timeCounter()){
 
             printf("Player %d, your turn!\n", token);
             selecting();
@@ -202,4 +204,3 @@ int main()
     return 0;
 }
         
-
