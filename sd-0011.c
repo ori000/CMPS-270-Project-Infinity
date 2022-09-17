@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 // #include <conio.h>
 
-// for next version:
-// osama: plz check the timer again
 
 int hour = 0, minute = 0, second = 0;
 
@@ -117,9 +116,9 @@ int CheckHorizontal(int token)
 int CheckVertical(int token)
 {
     int counter;
-    for (int i = 0; i < COLS; ++i)
+    for (int j = 0; j < COLS; ++j)
     {
-        for (int j = 0; j < 3; ++j) // 3 is the number of ways of connecting four tokens in one cloumn
+        for (int i = 0; i < 3; ++i) // 3 is the number of ways of connecting four tokens in one cloumn
         {
             counter = 0;
             for (int k = 0; k < 4; ++k) // 4 in a row
@@ -202,7 +201,7 @@ int coinToss()
 }
 
 // Compare the time taken by each player to determine the winner in the case of a tie
-tieWinner()
+int tieWinner()
 {
     printf("\n%s Time was %f seconds and %s Time was %f seconds.", players[0], timePerPlayer[0], players[1], timePerPlayer[1]);
     if (timePerPlayer[0] > timePerPlayer[1])
