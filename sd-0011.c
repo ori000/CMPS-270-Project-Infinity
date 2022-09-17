@@ -196,18 +196,15 @@ int coinToss()
 {
     srand(time(NULL));
     int random = rand();
-    printf("\n%d",random);
-    printf("\n%d", random %2);
     printf("\nTossing A coin .....\n");
     if(random % 2 == 0)
         token = 2;
     else token = 1;
-    printf("\n%d",token);
     printf("\n%s is the First to start!\n", players[token - 1]);
 }
 
 // Compare the time taken by each player to determine the winner in the case of a tie
-int tieWinner()
+void tieTime()
 {
     printf("\n%s Time was %f seconds and %s Time was %f seconds.", players[0], timePerPlayer[0], players[1], timePerPlayer[1]);
     if (timePerPlayer[0] > timePerPlayer[1])
@@ -219,14 +216,27 @@ int tieWinner()
         printf("\n\n%s wins!\n\n", players[2]);
     }
 }
+int tieFull()
+{
+    int countEntries = 0;
+    for(int i = 0; i < ROWS; i++)
+    {
+        for(int j = 0; j < COLS; j++)
+            if(matrix[i][j] != 0)
+                countEntries++;
+    }
+    if(countEntries == 42)
+        return 1;
+    else return 0;
 
+}
 int main()
 {
     createMatrix();
     display();
     enterNames();
     coinToss();
-    while (!(check(1) || check(2) || (check(1) && check(2))))
+    while (!(check(1) || check(2) || tieFull()))
     {
         printf("%s, your turn!\n", players[token - 1]);
 
@@ -244,10 +254,9 @@ int main()
     {
         printf("\n\n%s wins!\n\n", players[1]);
     }
-    else if (check(1) && check(2))
+    if (tieFull())
     {
-        printf("\n\nTie!\n\n");
-        tieWinner();
+        tieTime();
     }
     return 0;
 }
