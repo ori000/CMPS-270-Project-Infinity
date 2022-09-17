@@ -18,54 +18,10 @@ float timePerPlayer[2]; // stores the total time taken by each player
 char border[] = " ----------------------------";
 char guide[] = "  0   1   2   3   4   5   6  ";
 
-int token;        // Crurrent player Turn
+int token;        // Current player Turn
 int selected = 0; // Current Player Column selection
 
 void add_token();
-
-// int timeCalc(int time)
-// {
-// }
-
-// void delay(int ms)
-// {
-//     clock_t timeDelay = ms + clock();
-//     while (timeDelay > clock())
-//         ;
-// }
-
-// int counter()
-// {
-//     while(!kbhit() && flag == 0)
-//     {
-//         if(minute > 59)
-//         {
-//             minute = 0;
-//             ++hour;
-//         }
-//         if(second > 59)
-//         {
-//             second = 0;
-//             ++minute;
-//         }
-//         ++second;
-//     }
-// }
-
-// int timeCounter()
-// {
-//     while (minute < 3)
-//     { // keep looping while the user didn't hit any key and flag is 0
-//         if (second > 59)
-//         { // after second is greater than 59, reset second and increase 1 minute
-//             second = 0;
-//             ++minute;
-//         }
-//         delay(1000);
-//         second += 1;
-//     }
-//     return 0;
-// }
 
 // Creating A 2D Array and initiallizing all the values to 0
 void createMatrix()
@@ -99,6 +55,8 @@ void display()
 void selecting()
 {
 
+    clock_t start = clock();
+
     printf("\nChoose column: ");
     scanf(" %d", &selected);
 
@@ -113,6 +71,13 @@ void selecting()
         printf("Invalid selection. Please select a column between 0 and 6");
         selecting();
     }
+
+    clock_t end = clock();
+
+    // Adding the time of the total time taken by the player
+    float seconds = (float)(end - start) / CLOCKS_PER_SEC;
+    timePerPlayer[(token == 1) ? 1 : 0] += seconds; // Take the opposite of the current token since it was flipped after selecting
+    printf("%f", seconds);
 }
 
 // adding the token to the last available row
@@ -132,7 +97,6 @@ void add_token()
 int CheckHorizontal(int token)
 {
     int counter;
-
     for (int i = 0; i < ROWS; ++i)
     {
         for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
@@ -153,10 +117,9 @@ int CheckHorizontal(int token)
 int CheckVertical(int token)
 {
     int counter;
-
     for (int i = 0; i < COLS; ++i)
     {
-        for (int j = 0; j < 3; ++j) // 4 is the number of ways of connecting four tokens in one cloumn
+        for (int j = 0; j < 3; ++j) // 3 is the number of ways of connecting four tokens in one cloumn
         {
             counter = 0;
             for (int k = 0; k < 4; ++k) // 4 in a row
@@ -222,7 +185,7 @@ void enterNames()
     scanf("%s", player1);
 
     char player2[32];
-    printf("\nPlayer 1 - Enter your name:");
+    printf("\nPlayer 2 - Enter your name:");
     scanf("%s", player2);
 
     strcpy(players[0], player1);
@@ -260,21 +223,12 @@ int main()
     coinToss();
     while (!(check(1) || check(2) || (check(1) && check(2))))
     {
-
         printf("%s, your turn!\n", players[token - 1]);
-
-        // A timer that calculates the time taken by the user enter a valid input
-        clock_t start = clock();
 
         selecting();
 
-        clock_t end = clock();
-
-        // Adding the time of the total time taken by the player
-        float seconds = (float)(end - start) / CLOCKS_PER_SEC;
-        timePerPlayer[(token == 1) ? 1 : 0] += seconds; // Take the opposite of the current token since it was flipped after selecting
-        printf("%f", seconds);
         printf("\n\n");
+
         display();
     }
     if (check(1))
