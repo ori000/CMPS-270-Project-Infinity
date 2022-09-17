@@ -191,13 +191,19 @@ void enterNames()
     strcpy(players[1], player2);
 }
 
-// Toss A coin Randomly to determine which player starts the match
+// Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time such that rand() does not stick to the same value.
 int coinToss()
 {
-    unsigned int random = rand();
-    printf("Tossing A coin .....\n");
-    token = (random % 2 == 0) ? 1 : 2;
-    printf("%s is the First to start!\n", players[token - 1]);
+    srand(time(NULL));
+    int random = rand();
+    printf("\n%d",random);
+    printf("\n%d", random %2);
+    printf("\nTossing A coin .....\n");
+    if(random % 2 == 0)
+        token = 2;
+    else token = 1;
+    printf("\n%d",token);
+    printf("\n%s is the First to start!\n", players[token - 1]);
 }
 
 // Compare the time taken by each player to determine the winner in the case of a tie
