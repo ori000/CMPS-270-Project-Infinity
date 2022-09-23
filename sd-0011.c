@@ -92,6 +92,15 @@ void add_token()
         }
     }
 }
+/*
+REQUIRES:
+ROW & COL variables to loop through the matrix/2D array up to their bounds.
+Counter to check if there have been 4 inputs in a row.
+
+
+EFFECTS:
+Be able to check horizontally via incrementing the counter in case an index had a player input.
+*/
 
 int CheckHorizontal(int token)
 {
@@ -112,6 +121,14 @@ int CheckHorizontal(int token)
     }
     return 0;
 }
+/*
+REQUIRES:
+ROW & COL variables to loop through the matrix/2D array up to their bounds.
+Counter to check if there have been 4 inputs in a column.
+
+EFFECTS:
+Be able to check vertically via incrementing the counter in case an index had a player input.
+*/
 
 int CheckVertical(int token)
 {
@@ -190,7 +207,14 @@ void enterNames()
     strcpy(players[0], player1);
     strcpy(players[1], player2);
 }
+/*
+REQUIRES:
+Call the srand() function to specify a different seed each time we choose a random number
+Choose heads and tails for player 1 and 2 respectively via checking whether the rand() is either odd or even.
 
+EFFECTS:
+Be able to have two choices to choose for both players each in order to check who starts first.
+*/
 // Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time such that rand() does not stick to the same value.
 int coinToss()
 {
@@ -216,6 +240,14 @@ void tieTime()
         printf("\n\n%s wins!\n\n", players[2]);
     }
 }
+/*
+REQUIRES:
+A counter to keep track of placed entries (non-zero entries)
+A loop to loop through the matrix
+
+EFFECTS:
+Determine whether the matrix is full or not by counting the number of entries that are not equal to 0 each.
+*/
 int tieFull()
 {
     int countEntries = 0;
