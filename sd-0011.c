@@ -5,6 +5,17 @@
 // #include <conio.h>
 
 
+
+
+/*
+TEST CASES:
+
+Horizontal & Vertical: Osama
+Diagonal: Ayla & ???
+Out of bounds & invalid: ???
+
+*/
+
 int hour = 0, minute = 0, second = 0;
 
 #define ROWS 6
@@ -22,6 +33,14 @@ int selected = 0; // Current Player Column selection
 
 void add_token();
 
+/*
+REQUIRES:
+ROWS & COLS defined macros in order to check the bound of the rows and columns.
+2D matrix array
+EFFECTS:
+Instantiate all entries to 0 (fill in the matrix)
+*/
+
 // Creating A 2D Array and initiallizing all the values to 0
 void createMatrix()
 {
@@ -33,6 +52,14 @@ void createMatrix()
         }
     }
 }
+
+/*
+REQUIRES:
+ROWS & COL defined macros and the resulted 2D array matrix
+border & guide variable
+EFFECTS:
+Display/Print the matrix with an indexed square design
+*/
 
 // print the matrix with the current results
 void display()
@@ -49,6 +76,14 @@ void display()
     printf("%s\n", border);
     printf("%s\n", guide);
 }
+
+/*
+REQUIRES:
+
+
+EFFECTS:
+
+*/
 
 // Prompts the user to select a column
 void selecting()
@@ -78,6 +113,16 @@ void selecting()
     timePerPlayer[(token == 1) ? 1 : 0] += seconds; // Take the opposite of the current token since it was flipped after selecting
     printf("%f", seconds);
 }
+
+/*
+REQUIRES:
+
+Defined ROWS macro and 2d matrix
+EFFECTS:
+
+drop the item into the matrix (gravity simulation)
+
+*/
 
 // adding the token to the last available row
 void add_token()
@@ -150,6 +195,13 @@ int CheckVertical(int token)
     return 0;
 }
 
+/*
+REQUIRES:
+
+EFFECTS:
+
+*/
+
 int CheckDiagonals(int token)
 {
     int counter;
@@ -188,10 +240,25 @@ int CheckDiagonals(int token)
     return 0;
 }
 
+/*
+REQUIRES:
+token reference variable (through main)
+EFFECTS:
+check if any player won through a horizontal, vertical or diagonal input
+*/
+
 int check(int token)
 {
     return CheckHorizontal(token) || CheckVertical(token) || CheckDiagonals(token);
 }
+
+/*
+REQUIRES:
+two player char arrays of size 32
+scanner to scan the user's input
+EFFECTS:
+get the name the players
+*/
 
 // Prompts the players to enter their names
 void enterNames()
@@ -226,6 +293,14 @@ int coinToss()
     else token = 1;
     printf("\n%s is the First to start!\n", players[token - 1]);
 }
+
+/*
+REQUIRES:
+2 player arrays to check whose the player
+2 arrays to fill in the time taken
+EFFECTS:
+in case of a tie, check the winner based on time taken (less -> win, more -> lose)
+*/
 
 // Compare the time taken by each player to determine the winner in the case of a tie
 void tieTime()
@@ -262,6 +337,14 @@ int tieFull()
     else return 0;
 
 }
+
+/*
+REQUIRES:
+
+EFFECTS:
+
+*/
+
 int main()
 {
     createMatrix();
