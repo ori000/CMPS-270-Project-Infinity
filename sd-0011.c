@@ -8,8 +8,19 @@
 TEST CASES:
 
 Horizontal & Vertical: Osama
+[1,1,1,1] starting at indices 0,1,2,3 for all rows: check
+[2,2,2,2] starting at indices 0,1,2,3 for all rows: check
+[1]   [2]
+[1] , [2]   starting at row 0,1,2 for all columns: check
+[1]   [2]
+[1]   [2]
+
 Diagonal: Ayla & ???
-Out of bounds & invalid: ???
+Out of bounds & invalid:
+
+Handle invalid input at out of bounds indices: check
+Handle invalid(NaN) input for placing balls: check
+
 
 */
 
@@ -37,48 +48,11 @@ void add_token();
 int check();
 int tieFull();
 void tieTime();
+void replaceSpaces(char p[32]);
+
 
 /*
-REQUIRES:
-
-EFFECTS:
-
-*/
-
-int main()
-{
-    createMatrix();
-    display();
-    enterNames();
-    coinToss();
-
-    while (!(check(1) || check(2) || tieFull()))
-    {
-        printf("%s, your turn!\n", players[token - 1]);
-
-        selecting();
-
-        printf("\n\n");
-
-        display();
-    }
-    if (check(1))
-    {
-        printf("\n\n%s wins!\n\n", players[0]);
-    }
-    if (check(2))
-    {
-        printf("\n\n%s wins!\n\n", players[1]);
-    }
-    if (tieFull())
-    {
-        tieTime();
-    }
-    return 0;
-}
-
-/*
-REQUIRES:
+REQUIRES: nothing
 ROWS & COLS defined macros in order to check the bound of the rows and columns.
 2D matrix array
 EFFECTS:
@@ -98,7 +72,7 @@ void createMatrix()
 }
 
 /*
-REQUIRES:
+REQUIRES: nothing
 ROWS & COL defined macros and the resulted 2D array matrix
 border & guide variable
 EFFECTS:
@@ -123,11 +97,11 @@ void display()
 
 
 /*
-REQUIRES:
+REQUIRES: nothing
 two player char arrays of size 32
 scanner to scan the user's input
 EFFECTS:
-get the name the players
+get the name the players by placing the input into char arrays
 */
 
 // Prompts the players to enter their names
@@ -135,17 +109,19 @@ void enterNames()
 {
     char player1[32];
     printf("\nPlayer 1 - Enter your name:");
-    scanf("%s", player1);
+    fgets(player1, 32, stdin);
+    replaceSpaces(player1);
 
     char player2[32];
     printf("\nPlayer 2 - Enter your name:");
-    scanf("%s", player2);
+    fgets(player2, 32, stdin);
+    replaceSpaces(player2);
 
     strcpy(players[0], player1);
     strcpy(players[1], player2);
 }
 /*
-REQUIRES:
+REQUIRES: nothing
 Call the srand() function to specify a different seed each time we choose a random number
 Choose heads and tails for player 1 and 2 respectively via checking whether the rand() is either odd or even.
 
@@ -232,13 +208,13 @@ void add_token()
     }
 }
 /*
-REQUIRES:
+REQUIRES: token to check the player's input
 ROW & COL variables to loop through the matrix/2D array up to their bounds.
 Counter to check if there have been 4 inputs in a row.
 
 
 EFFECTS:
-Be able to check horizontally via incrementing the counter in case an index had a player input.
+Be able to check if the player won horizontally via incrementing the counter in case an index had a player input.
 */
 
 int CheckHorizontal(int token)
@@ -261,12 +237,12 @@ int CheckHorizontal(int token)
     return 0;
 }
 /*
-REQUIRES:
+REQUIRES: token to check player input
 ROW & COL variables to loop through the matrix/2D array up to their bounds.
 Counter to check if there have been 4 inputs in a column.
 
 EFFECTS:
-Be able to check vertically via incrementing the counter in case an index had a player input.
+Be able to check if the player won vertically via incrementing the counter in case an index had a player input.
 */
 
 int CheckVertical(int token)
@@ -290,10 +266,11 @@ int CheckVertical(int token)
 }
 
 /*
-REQUIRES:
+REQUIRES: token to check player input
 
 EFFECTS:
 
+check if the player (1 or 2) won diagonally by counting the lines/direct diagonal coins of the same number
 */
 
 int CheckDiagonals(int token)
@@ -347,11 +324,11 @@ int check(int token)
 }
 
 /*
-REQUIRES:
+REQUIRES: nothing
 2 player arrays to check whose the player
 2 arrays to fill in the time taken
 EFFECTS:
-in case of a tie, check the winner based on time taken (less -> win, more -> lose)
+in case of a tie (full matrix), check the winner based on time taken (less -> win, more -> lose)
 */
 
 // Compare the time taken by each player to determine the winner in the case of a tie
@@ -368,7 +345,7 @@ void tieTime()
     }
 }
 /*
-REQUIRES:
+REQUIRES: nothing
 A counter to keep track of placed entries (non-zero entries)
 A loop to loop through the matrix
 
@@ -388,4 +365,48 @@ int tieFull()
         return 1;
     else
         return 0;
+}
+/*
+REQUIRES: char array of size 32
+
+EFFECTS: replace any spaces in the input with _
+*/
+void replaceSpaces(char p[32])
+{
+    for(int i = 0; i < 32; i++)
+    {
+        if(p[i] == ' ')
+            p[i] = '_';
+    }
+}
+int main()
+{
+    createMatrix();
+    display();
+    enterNames();
+    coinToss();
+
+    while (!(check(1) || check(2) || tieFull()))
+    {
+        printf("%s, your turn!\n", players[token - 1]);
+
+        selecting();
+
+        printf("\n\n");
+
+        display();
+    }
+    if (check(1))
+    {
+        printf("\n\n%s wins!\n\n", players[0]);
+    }
+    if (check(2))
+    {
+        printf("\n\n%s wins!\n\n", players[1]);
+    }
+    if (tieFull())
+    {
+        tieTime();
+    }
+    return 0;
 }
