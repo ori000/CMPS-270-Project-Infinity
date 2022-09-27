@@ -4,9 +4,6 @@
 #include <string.h>
 // #include <conio.h>
 
-
-
-
 /*
 TEST CASES:
 
@@ -31,7 +28,54 @@ char guide[] = "  0   1   2   3   4   5   6  ";
 int token;        // Current player Turn
 int selected = 0; // Current Player Column selection
 
+void createMatrix();
+void display();
+void enterNames();
+int coinToss();
+void selecting();
 void add_token();
+int check();
+int tieFull();
+void tieTime();
+
+/*
+REQUIRES:
+
+EFFECTS:
+
+*/
+
+int main()
+{
+    createMatrix();
+    display();
+    enterNames();
+    coinToss();
+
+    while (!(check(1) || check(2) || tieFull()))
+    {
+        printf("%s, your turn!\n", players[token - 1]);
+
+        selecting();
+
+        printf("\n\n");
+
+        display();
+    }
+    if (check(1))
+    {
+        printf("\n\n%s wins!\n\n", players[0]);
+    }
+    if (check(2))
+    {
+        printf("\n\n%s wins!\n\n", players[1]);
+    }
+    if (tieFull())
+    {
+        tieTime();
+    }
+    return 0;
+}
 
 /*
 REQUIRES:
@@ -77,6 +121,51 @@ void display()
     printf("%s\n", guide);
 }
 
+
+/*
+REQUIRES:
+two player char arrays of size 32
+scanner to scan the user's input
+EFFECTS:
+get the name the players
+*/
+
+// Prompts the players to enter their names
+void enterNames()
+{
+    char player1[32];
+    printf("\nPlayer 1 - Enter your name:");
+    scanf("%s", player1);
+
+    char player2[32];
+    printf("\nPlayer 2 - Enter your name:");
+    scanf("%s", player2);
+
+    strcpy(players[0], player1);
+    strcpy(players[1], player2);
+}
+/*
+REQUIRES:
+Call the srand() function to specify a different seed each time we choose a random number
+Choose heads and tails for player 1 and 2 respectively via checking whether the rand() is either odd or even.
+
+EFFECTS:
+Be able to have two choices to choose for both players each in order to check who starts first.
+*/
+// Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time such that rand() does not stick to the same value.
+int coinToss()
+{
+    srand(time(NULL));
+    int random = rand();
+    printf("\nTossing A coin .....\n");
+    if (random % 2 == 0)
+        token = 2;
+    else
+        token = 1;
+    printf("\n%s is the First to start!\n", players[token - 1]);
+}
+
+
 /*
 REQUIRES:
 
@@ -92,7 +181,12 @@ void selecting()
     clock_t start = clock();
 
     printf("\nChoose column: ");
-    scanf(" %d", &selected);
+    while (scanf(" %d", &selected) != 1)
+    {
+        printf("Invalid selection. Please enter an integer: ");
+        while (getchar() != '\n')
+            ;
+    }
 
     // checks if the user entered a valid position
     if ((selected <= 6 && selected >= 0) && matrix[0][selected] == 0)
@@ -254,48 +348,6 @@ int check(int token)
 
 /*
 REQUIRES:
-two player char arrays of size 32
-scanner to scan the user's input
-EFFECTS:
-get the name the players
-*/
-
-// Prompts the players to enter their names
-void enterNames()
-{
-    char player1[32];
-    printf("\nPlayer 1 - Enter your name:");
-    scanf("%s", player1);
-
-    char player2[32];
-    printf("\nPlayer 2 - Enter your name:");
-    scanf("%s", player2);
-
-    strcpy(players[0], player1);
-    strcpy(players[1], player2);
-}
-/*
-REQUIRES:
-Call the srand() function to specify a different seed each time we choose a random number
-Choose heads and tails for player 1 and 2 respectively via checking whether the rand() is either odd or even.
-
-EFFECTS:
-Be able to have two choices to choose for both players each in order to check who starts first.
-*/
-// Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time such that rand() does not stick to the same value.
-int coinToss()
-{
-    srand(time(NULL));
-    int random = rand();
-    printf("\nTossing A coin .....\n");
-    if(random % 2 == 0)
-        token = 2;
-    else token = 1;
-    printf("\n%s is the First to start!\n", players[token - 1]);
-}
-
-/*
-REQUIRES:
 2 player arrays to check whose the player
 2 arrays to fill in the time taken
 EFFECTS:
@@ -326,52 +378,14 @@ Determine whether the matrix is full or not by counting the number of entries th
 int tieFull()
 {
     int countEntries = 0;
-    for(int i = 0; i < ROWS; i++)
+    for (int i = 0; i < ROWS; i++)
     {
-        for(int j = 0; j < COLS; j++)
-            if(matrix[i][j] != 0)
+        for (int j = 0; j < COLS; j++)
+            if (matrix[i][j] != 0)
                 countEntries++;
     }
-    if(countEntries == 42)
+    if (countEntries == 42)
         return 1;
-    else return 0;
-
-}
-
-/*
-REQUIRES:
-
-EFFECTS:
-
-*/
-
-int main()
-{
-    createMatrix();
-    display();
-    enterNames();
-    coinToss();
-    while (!(check(1) || check(2) || tieFull()))
-    {
-        printf("%s, your turn!\n", players[token - 1]);
-
-        selecting();
-
-        printf("\n\n");
-
-        display();
-    }
-    if (check(1))
-    {
-        printf("\n\n%s wins!\n\n", players[0]);
-    }
-    if (check(2))
-    {
-        printf("\n\n%s wins!\n\n", players[1]);
-    }
-    if (tieFull())
-    {
-        tieTime();
-    }
-    return 0;
+    else
+        return 0;
 }
