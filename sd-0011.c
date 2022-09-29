@@ -42,7 +42,7 @@ int selected = 0; // Current Player Column selection
 void createMatrix();
 void display();
 void enterNames();
-int coinToss();
+void coinToss();
 void selecting();
 void add_token();
 int check();
@@ -53,8 +53,7 @@ void replaceSpaces(char p[32]);
 
 /*
 REQUIRES: nothing
-ROWS & COLS defined macros in order to check the bound of the rows and columns.
-2D matrix array
+
 EFFECTS:
 Instantiate all entries to 0 (fill in the matrix)
 */
@@ -73,8 +72,7 @@ void createMatrix()
 
 /*
 REQUIRES: nothing
-ROWS & COL defined macros and the resulted 2D array matrix
-border & guide variable
+
 EFFECTS:
 Display/Print the matrix with an indexed square design
 */
@@ -98,8 +96,7 @@ void display()
 
 /*
 REQUIRES: nothing
-two player char arrays of size 32
-scanner to scan the user's input
+
 EFFECTS:
 get the name the players by placing the input into char arrays
 */
@@ -122,14 +119,12 @@ void enterNames()
 }
 /*
 REQUIRES: nothing
-Call the srand() function to specify a different seed each time we choose a random number
-Choose heads and tails for player 1 and 2 respectively via checking whether the rand() is either odd or even.
 
 EFFECTS:
 Be able to have two choices to choose for both players each in order to check who starts first.
 */
-// Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time such that rand() does not stick to the same value.
-int coinToss()
+// Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time since rand() does not stick to the same value.
+void coinToss()
 {
     srand(time(NULL));
     int random = rand();
@@ -143,11 +138,10 @@ int coinToss()
 
 
 /*
-REQUIRES:
-
+REQUIRES: nothing
 
 EFFECTS:
-
+choose valid place to drop the ball in & get the time taken for each player
 */
 
 // Prompts the user to select a column
@@ -209,9 +203,6 @@ void add_token()
 }
 /*
 REQUIRES: token to check the player's input
-ROW & COL variables to loop through the matrix/2D array up to their bounds.
-Counter to check if there have been 4 inputs in a row.
-
 
 EFFECTS:
 Be able to check if the player won horizontally via incrementing the counter in case an index had a player input.
@@ -238,8 +229,6 @@ int CheckHorizontal(int token)
 }
 /*
 REQUIRES: token to check player input
-ROW & COL variables to loop through the matrix/2D array up to their bounds.
-Counter to check if there have been 4 inputs in a column.
 
 EFFECTS:
 Be able to check if the player won vertically via incrementing the counter in case an index had a player input.
@@ -266,7 +255,7 @@ int CheckVertical(int token)
 }
 
 /*
-REQUIRES: token to check player input
+REQUIRES: nothing
 
 EFFECTS:
 
@@ -325,10 +314,8 @@ int check(int token)
 
 /*
 REQUIRES: nothing
-2 player arrays to check whose the player
-2 arrays to fill in the time taken
 EFFECTS:
-in case of a tie (full matrix), check the winner based on time taken (less -> win, more -> lose)
+in case of a tie (full matrix), print the winner based on time taken (less -> win, more -> lose)
 */
 
 // Compare the time taken by each player to determine the winner in the case of a tie
@@ -346,8 +333,6 @@ void tieTime()
 }
 /*
 REQUIRES: nothing
-A counter to keep track of placed entries (non-zero entries)
-A loop to loop through the matrix
 
 EFFECTS:
 Determine whether the matrix is full or not by counting the number of entries that are not equal to 0 each.
