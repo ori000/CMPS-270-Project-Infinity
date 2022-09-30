@@ -16,7 +16,9 @@ Horizontal & Vertical: Osama
 [1]   [2]
 
 Diagonal: Ayla & ???
-Out of bounds & invalid:
+Out of bounds & invalid: 
+'f': check
+90: check
 
 Handle invalid input at out of bounds indices: check
 Handle invalid(NaN) input for placing balls: check
