@@ -15,7 +15,24 @@ Horizontal & Vertical:
 [1]   [2]
 [1]   [2]
 
-Diagonal: Ayla & ???
+Diagonal: 
+
+[1]             starting at indeces 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accotdingly
+      [1]       for all the lower diagonals possible in the game
+         [1]
+
+
+         [1]    starting at indices 0,1,2,3 for rows 4,5,6
+      [1]       it will check the last 3 rows and first 4 columns
+   [1]          accordingly for all the upper diagonals possible in the game
+[1]
+
+same goes to the value [2]
+
+
+
+
 Out of bounds & invalid:
 
 Handle invalid input when inserting into a column at out of bounds indices:
@@ -139,6 +156,8 @@ void coinToss()
     printf("\n%s is the First to start!\n", players[token - 1]);
 }
 
+
+
 /*
 REQUIRES:
  - nothing
@@ -180,6 +199,8 @@ void selecting()
     printf("%f", seconds);
 }
 
+
+
 /*
 REQUIRES:
  - Defined ROWS macro and 2d matrix
@@ -199,6 +220,10 @@ void add_token()
         }
     }
 }
+
+
+
+
 /*
 REQUIRES:
  - token to check the player's input
@@ -282,7 +307,7 @@ int CheckDiagonals(int token)
             }
         }
         else
-        { // this is for the lower diagonals, that will check whether there are 4 dots connected diagonally
+        { // this is for the upper diagonals, that will check whether there are 4 dots connected diagonally
             for (int j = 0; j < 4; j++)
             {
                 counter = 0;
@@ -395,5 +420,7 @@ int main()
     {
         tieTime();
     }
+
+    system("pause");
     return 0;
 }
