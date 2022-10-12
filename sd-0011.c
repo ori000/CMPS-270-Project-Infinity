@@ -7,7 +7,7 @@
 /*
 TEST CASES:
 
-Horizontal & Vertical: Osama
+Horizontal & Vertical:
 [1,1,1,1] starting at indices 0,1,2,3 for all rows: check
 [2,2,2,2] starting at indices 0,1,2,3 for all rows: check
 [1]   [2]
@@ -18,7 +18,12 @@ Horizontal & Vertical: Osama
 Diagonal: Ayla & ???
 Out of bounds & invalid:
 
-Handle invalid input at out of bounds indices: check
+Handle invalid input when inserting into a column at out of bounds indices:
+Propt the user to re-enter a valid column index when the user enters:
+- a negative number (e.g. -1)
+- a number greater than the number of columns(6)
+- a non-integer value (e.g. "a")
+
 Handle invalid(NaN) input for placing balls: check
 
 
@@ -50,15 +55,14 @@ int tieFull();
 void tieTime();
 void replaceSpaces(char p[32]);
 
-
 /*
-REQUIRES: nothing
-
+REQUIRES:
+ - nothing
 EFFECTS:
-Instantiate all entries to 0 (fill in the matrix)
+ - Creating A 2D Array and initiallizing all the values to 0
+ - Instantiate all entries to 0 (fill in the matrix)
 */
 
-// Creating A 2D Array and initiallizing all the values to 0
 void createMatrix()
 {
     for (int i = 0; i < ROWS; i++)
@@ -71,13 +75,13 @@ void createMatrix()
 }
 
 /*
-REQUIRES: nothing
-
+REQUIRES:
+ - nothing
 EFFECTS:
-Display/Print the matrix with an indexed square design
+ - Print the matrix with the current results
+ - Display/Print the matrix with an indexed square design
 */
 
-// print the matrix with the current results
 void display()
 {
     printf("%s\n", border);
@@ -93,15 +97,14 @@ void display()
     printf("%s\n", guide);
 }
 
-
 /*
-REQUIRES: nothing
-
+REQUIRES:
+ - nothing
 EFFECTS:
-get the name the players by placing the input into char arrays
+ - Prompts the players to enter their names
+ - get the name the players by placing the input into char arrays
 */
 
-// Prompts the players to enter their names
 void enterNames()
 {
     char player1[32];
@@ -118,12 +121,12 @@ void enterNames()
     strcpy(players[1], player2);
 }
 /*
-REQUIRES: nothing
-
+REQUIRES:
+ - nothing
 EFFECTS:
-Be able to have two choices to choose for both players each in order to check who starts first.
+ - Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time since rand() does not stick to the same value.
+ - Be able to have two choices to choose for both players each in order to check who starts first.
 */
-// Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time since rand() does not stick to the same value.
 void coinToss()
 {
     srand(time(NULL));
@@ -136,22 +139,21 @@ void coinToss()
     printf("\n%s is the First to start!\n", players[token - 1]);
 }
 
-
 /*
-REQUIRES: nothing
-
+REQUIRES:
+ - nothing
 EFFECTS:
-choose valid place to drop the ball in & get the time taken for each player
+ - Prompts the user to select a column
+ - Choose valid place to drop the ball in & get the time taken for each player
 */
 
-// Prompts the user to select a column
 void selecting()
 {
 
     clock_t start = clock();
-
     printf("\nChoose column: ");
-    while (scanf(" %d", &selected) != 1)
+    char term = ' ';
+    while (scanf("%d%c", &selected, &term) != 2 || term != '\n')
     {
         printf("Invalid selection. Please enter an integer: ");
         while (getchar() != '\n')
@@ -180,15 +182,11 @@ void selecting()
 
 /*
 REQUIRES:
-
-Defined ROWS macro and 2d matrix
+ - Defined ROWS macro and 2d matrix
 EFFECTS:
-
-drop the item into the matrix (gravity simulation)
-
+ - drop the item into the matrix (gravity simulation)
+ - by adding the token to the last available row
 */
-
-// adding the token to the last available row
 void add_token()
 {
     int curRow;
@@ -202,12 +200,12 @@ void add_token()
     }
 }
 /*
-REQUIRES: token to check the player's input
+REQUIRES:
+ - token to check the player's input
 
 EFFECTS:
-Be able to check if the player won horizontally via incrementing the counter in case an index had a player input.
+ - Be able to check if the player won horizontally via incrementing the counter in case an index had a player input.
 */
-
 int CheckHorizontal(int token)
 {
     int counter;
@@ -228,10 +226,11 @@ int CheckHorizontal(int token)
     return 0;
 }
 /*
-REQUIRES: token to check player input
+REQUIRES:
+ - token to check player input
 
 EFFECTS:
-Be able to check if the player won vertically via incrementing the counter in case an index had a player input.
+ - Be able to check if the player won vertically via incrementing the counter in case an index had a player input.
 */
 
 int CheckVertical(int token)
@@ -255,11 +254,11 @@ int CheckVertical(int token)
 }
 
 /*
-REQUIRES: nothing
+REQUIRES:
+ - nothing
 
 EFFECTS:
-
-check if the player (1 or 2) won diagonally by counting the lines/direct diagonal coins of the same number
+ - Check if the player (1 or 2) won diagonally by counting the lines/direct diagonal coins of the same number
 */
 
 int CheckDiagonals(int token)
@@ -302,9 +301,9 @@ int CheckDiagonals(int token)
 
 /*
 REQUIRES:
-token reference variable (through main)
+ - token reference variable (through main)
 EFFECTS:
-check if any player won through a horizontal, vertical or diagonal input
+ - check if any player won through a horizontal, vertical or diagonal input
 */
 
 int check(int token)
@@ -313,12 +312,12 @@ int check(int token)
 }
 
 /*
-REQUIRES: nothing
+REQUIRES:
+ - nothing
 EFFECTS:
-in case of a tie (full matrix), print the winner based on time taken (less -> win, more -> lose)
+ - Compare the time taken by each player to determine the winner in the case of a tie
+ - in case of a tie (full matrix), print the winner based on time taken (less -> win, more -> lose)
 */
-
-// Compare the time taken by each player to determine the winner in the case of a tie
 void tieTime()
 {
     printf("\n%s Time was %f seconds and %s Time was %f seconds.", players[0], timePerPlayer[0], players[1], timePerPlayer[1]);
@@ -332,10 +331,11 @@ void tieTime()
     }
 }
 /*
-REQUIRES: nothing
+REQUIRES:
+ - nothing
 
 EFFECTS:
-Determine whether the matrix is full or not by counting the number of entries that are not equal to 0 each.
+ - Determine whether the matrix is full or not by counting the number of entries that are not equal to 0 each.
 */
 int tieFull()
 {
@@ -352,18 +352,20 @@ int tieFull()
         return 0;
 }
 /*
-REQUIRES: char array of size 32
-
-EFFECTS: replace any spaces in the input with _
+REQUIRES:
+ - char array of size 32
+EFFECTS:
+ - replace any spaces in the input with _
 */
 void replaceSpaces(char p[32])
 {
-    for(int i = 0; i < 32; i++)
+    for (int i = 0; i < 32; i++)
     {
-        if(p[i] == ' ')
+        if (p[i] == ' ')
             p[i] = '_';
     }
 }
+
 int main()
 {
     createMatrix();
