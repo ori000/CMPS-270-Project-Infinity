@@ -386,9 +386,35 @@ void replaceSpaces(char p[32])
     }
 }
 
+
+/*
+    REQUIRES:
+    -Nothing
+
+    EFFECTS:
+    -print the rules of the game
+*/
+void print_rules() {
+    printf("Rules:\n");
+    printf("1. The game board has seven columns and six rows.\n");
+    printf("2. There are 21 red (number 1) and 21 yellow (number 2) tokens.\n");
+    printf("3. One player plays with red tokens, the other with yellow tokens.\n");
+    printf("4. The tokens are inserted at the top of a column, and they will fall down and land on the ground (if the column was empty) or on top of a previously inserted token.\n");
+    printf("5. Red starts (number 1) .\n");
+    printf("6. Red and yellow take turns.\n");
+    printf("7. One can only insert tokens in one of the seven columns.\n");
+    printf("8. One cannot insert a token into a column that is full.\n");
+    printf("9. A line consists of several tokens, either in vertical, horizontal, or diagonal form, which contain only tokens of the same color.\n");
+    printf("10. A player wins if they manage to form a line of four tokens of their color.\n");
+    printf("11. The game ends if one of the players wins.\n");
+    printf("12. There will be no ties. In case of a tie on the board, the player that took less over-all time wins.\n\n");
+    printf("Let's start playing\n ");
+}
+
 int main()
 {
     createMatrix();
+    print_rules();
     display();
     enterNames();
     coinToss();
