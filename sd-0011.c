@@ -408,7 +408,7 @@ void print_rules() {
     printf("10. A player wins if they manage to form a line of four tokens of their color.\n");
     printf("11. The game ends if one of the players wins.\n");
     printf("12. There will be no ties. In case of a tie on the board, the player that took less over-all time wins.\n\n");
-    printf("Let's start playing\n ");
+    printf("Let's start playing\n");
 }
 
 int main()
