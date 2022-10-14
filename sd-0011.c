@@ -15,7 +15,7 @@ Horizontal & Vertical:
 [1]   [2]
 [1]   [2]
 
-Diagonal: 
+Diagonal:
 
 [1]             starting at indeces 0,1,2,3 for rows 1,2,3
    [1]          it will check the first 3 rows and 4 columns accotdingly
@@ -127,11 +127,13 @@ void enterNames()
     char player1[32];
     printf("\nPlayer 1 - Enter your name:");
     fgets(player1, 32, stdin);
+    player1[strcspn(player1, "\n")] = 0;
     replaceSpaces(player1);
 
     char player2[32];
     printf("\nPlayer 2 - Enter your name:");
     fgets(player2, 32, stdin);
+    player2[strcspn(player2, "\n")] = 0;
     replaceSpaces(player2);
 
     strcpy(players[0], player1);
@@ -155,8 +157,6 @@ void coinToss()
         token = 1;
     printf("\n%s is the First to start!\n", players[token - 1]);
 }
-
-
 
 /*
 REQUIRES:
@@ -199,8 +199,6 @@ void selecting()
     printf("%f", seconds);
 }
 
-
-
 /*
 REQUIRES:
  - Defined ROWS macro and 2d matrix
@@ -220,9 +218,6 @@ void add_token()
         }
     }
 }
-
-
-
 
 /*
 REQUIRES:
