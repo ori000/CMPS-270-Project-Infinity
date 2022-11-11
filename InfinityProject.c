@@ -2,7 +2,31 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-// #include <conio.h>
+
+/*
+USE EXPONENTIAL DISTRIBUTION IN ORDER TO PREDICT WHEN TO BLOCK, PLACE IN SMART WAYS DEPENDING ON DIFFICULTY
+
+Predict block vertically
+    If above == null , below == 1 and in bound => place
+    If below == null , above == 1 and in bound => place
+Predict block horizontally
+    If left == null , right == 1 and in bound => place
+    If right == null , left == 1 and in bound => place
+Predict block oblique 1
+    If uLeft == null , lRight == 1 and in bound => place
+    If lRight == null , uLeft == 1 and in bound => place
+Predict block oblique 2
+    If uRight == null , lLeft == 1 and in bound => place
+    If lLeft == null , uRight == 1 and in bound => place
+
+Predict win vertically
+    If 
+Predict win horizontally
+Predict win oblique 1
+Predict win oblique 2
+
+
+*/
 
 /*
 TEST CASES:
@@ -71,6 +95,28 @@ int check();
 int tieFull();
 void tieTime();
 void replaceSpaces(char p[32]);
+
+/*
+REQUIRES: non-zero lambda
+
+EFFECTS: return exponential random variable
+*/
+double ran_expo(double lambda){
+    double u;
+    u = rand() / (RAND_MAX + 1.0);
+    return -log(1- u) / lambda;
+}
+
+int difficulty(double lambda)
+{
+    double x = ran_expo(lambda);
+    if(x > 100 && x < 200)
+        return 1;
+    else if(x > 200)
+        return 2;
+    else
+        return 3;
+}
 
 /*
 REQUIRES:
@@ -244,6 +290,92 @@ int CheckHorizontal(int token)
         }
     }
     return 0;
+}
+/*
+REQUIRES: nothing
+
+EFFECTS: block human input on the horizontal axis using exponential distribution
+*/
+int blockHorizontal()
+{
+    double e;
+    for(int x = 0; x < 5; x++)
+        e += ran_expo(0.005);
+    if(e > 300)
+    {
+        for (int i = 0; i < ROWS; ++i)
+        {
+            for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+            {
+                if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
+                    matrix[i+1][j] = 2;
+                else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
+                    matrix[i-1][j] = 2;
+            }
+        }
+    }
+}
+/*
+REQUIRES: nothing
+
+EFFECTS: block human input on the vertical axis using exponential distribution
+*/
+int blockVertical()
+{
+    double e;
+    for(int x = 0; x < 5; x++)
+        e += ran_expo(0.005);
+    if(e > 300)
+    {
+        for (int j = 0; j < COLS; ++i)
+        {
+            for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
+            {
+                if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
+                    matrix[i][j+1] = 2;
+                else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
+                    matrix[i][j-1] = 2;
+            }
+        } 
+    }
+}
+/*
+REQUIRES: nothing
+
+EFFECTS: block human input on the oblique axis using exponential distribution
+*/
+int blockOblique()
+{
+    srand((unsigned)time(NULL));
+    double e;
+    for(int x = 0; x < 5; x++)
+        e += ran_expo(0.005);
+    if(e > 300)
+    {
+        for (int i = 0; i < ROWS; i++)
+        {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
+                        matrix[i+1][j+1] = 2;
+                }
+                for (int j = 0; j < 4; j++)
+                {
+                    if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
+                        matrix[i-1][j+1] = 2;
+                }
+                for (int j = 0; j < 4; j++)
+                {
+                    if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
+                        matrix[i-1][j-1] = 2;
+                }
+                for (int j = 0; j < 4; j++)
+                {
+                    if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
+                        matrix[i+1][j-1] = 2;
+                }
+        }
+    }
 }
 /*
 REQUIRES:
