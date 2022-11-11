@@ -84,6 +84,7 @@ char guide[] = "  0   1   2   3   4   5   6  ";
 
 int token;        // Current player Turn
 int selected = 0; // Current Player Column selection
+int difficulty = 0;
 
 void createMatrix();
 void display();
@@ -106,16 +107,20 @@ double ran_expo(double lambda){
     u = rand() / (RAND_MAX + 1.0);
     return -log(1- u) / lambda;
 }
+/*
+REQUIRES: non-zero lambda
 
-int difficulty(double lambda)
+EFFECTS: return difficulty level based on exponential random variable value
+*/
+void difficulty(double lambda)
 {
     double x = ran_expo(lambda);
     if(x > 100 && x < 200)
-        return 1;
+        difficulty = 1;
     else if(x > 200)
-        return 2;
+        difficulty = 2;
     else
-        return 3;
+        difficulty = 3;
 }
 
 /*
@@ -298,19 +303,63 @@ EFFECTS: block human input on the horizontal axis using exponential distribution
 */
 int blockHorizontal()
 {
-    double e;
-    for(int x = 0; x < 5; x++)
-        e += ran_expo(0.005);
-    if(e > 300)
+    if(difficulty == 1)
     {
-        for (int i = 0; i < ROWS; ++i)
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.075);
+        if(e > 300)
         {
-            for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+            for (int i = 0; i < ROWS; ++i)
             {
-                if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
-                    matrix[i+1][j] = 2;
-                else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
-                    matrix[i-1][j] = 2;
+                for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
+                        matrix[i+1][j] = 2;
+                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
+                        matrix[i-1][j] = 2;
+                }
+            }
+        }
+    }
+    else if(difficulty == 2)
+    {
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.005);
+        if(e > 300)
+        {
+            for (int i = 0; i < ROWS; ++i)
+            {
+                for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
+                        matrix[i+1][j] = 2;
+                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
+                        matrix[i-1][j] = 2;
+                }
+            }
+        }
+    }
+    else if(difficulty == 3)
+    {
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.0005);
+        if(e > 300)
+        {
+            for (int i = 0; i < ROWS; ++i)
+            {
+                for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
+                        matrix[i+1][j] = 2;
+                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
+                        matrix[i-1][j] = 2;
+                }
             }
         }
     }
@@ -322,21 +371,65 @@ EFFECTS: block human input on the vertical axis using exponential distribution
 */
 int blockVertical()
 {
-    double e;
-    for(int x = 0; x < 5; x++)
-        e += ran_expo(0.005);
-    if(e > 300)
+    if(difficulty == 1)
     {
-        for (int j = 0; j < COLS; ++i)
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.075);
+        if(e > 300)
         {
-            for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
+            for (int j = 0; j < COLS; ++i)
             {
-                if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
-                    matrix[i][j+1] = 2;
-                else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
-                    matrix[i][j-1] = 2;
-            }
-        } 
+                for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
+                        matrix[i][j+1] = 2;
+                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
+                        matrix[i][j-1] = 2;
+                }
+            } 
+        }
+    }
+    else if(difficulty == 2)
+    {
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.005);
+        if(e > 300)
+        {
+            for (int j = 0; j < COLS; ++i)
+            {
+                for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
+                        matrix[i][j+1] = 2;
+                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
+                        matrix[i][j-1] = 2;
+                }
+            } 
+        }
+    }
+    else if(difficulty == 3)
+    {
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.0005);
+        if(e > 300)
+        {
+            for (int j = 0; j < COLS; ++i)
+            {
+                for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
+                        matrix[i][j+1] = 2;
+                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
+                        matrix[i][j-1] = 2;
+                }
+            } 
+        }
     }
 }
 /*
@@ -346,34 +439,103 @@ EFFECTS: block human input on the oblique axis using exponential distribution
 */
 int blockOblique()
 {
-    srand((unsigned)time(NULL));
-    double e;
-    for(int x = 0; x < 5; x++)
-        e += ran_expo(0.005);
-    if(e > 300)
+    if (difficulty == 1)
     {
-        for (int i = 0; i < ROWS; i++)
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.075);
+        if(e > 300)
         {
-                for (int j = 0; j < 4; j++)
-                {
-                    if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
-                        matrix[i+1][j+1] = 2;
-                }
-                for (int j = 0; j < 4; j++)
-                {
-                    if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
-                        matrix[i-1][j+1] = 2;
-                }
-                for (int j = 0; j < 4; j++)
-                {
-                    if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
-                        matrix[i-1][j-1] = 2;
-                }
-                for (int j = 0; j < 4; j++)
-                {
-                    if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
-                        matrix[i+1][j-1] = 2;
-                }
+            for (int i = 0; i < ROWS; i++)
+            {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
+                            matrix[i+1][j+1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
+                            matrix[i-1][j+1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
+                            matrix[i-1][j-1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
+                            matrix[i+1][j-1] = 2;
+                    }
+            }
+        }
+    }
+    else if (difficulty == 2)
+    {
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.005);
+        if(e > 300)
+        {
+            for (int i = 0; i < ROWS; i++)
+            {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
+                            matrix[i+1][j+1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
+                            matrix[i-1][j+1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
+                            matrix[i-1][j-1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
+                            matrix[i+1][j-1] = 2;
+                    }
+            }
+        }
+    }
+    else if (difficulty == 3)
+    {
+        srand((unsigned)time(NULL));
+        double e;
+        for(int x = 0; x < 5; x++)
+            e += ran_expo(0.0005);
+        if(e > 300)
+        {
+            for (int i = 0; i < ROWS; i++)
+            {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
+                            matrix[i+1][j+1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
+                            matrix[i-1][j+1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
+                            matrix[i-1][j-1] = 2;
+                    }
+                    for (int j = 0; j < 4; j++)
+                    {
+                        if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
+                            matrix[i+1][j-1] = 2;
+                    }
+            }
         }
     }
 }
