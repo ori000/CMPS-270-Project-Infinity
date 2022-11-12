@@ -85,7 +85,8 @@ char guide[] = "  0   1   2   3   4   5   6  ";
 int token;        // Current player Turn
 int selected = 0; // Current Player Column selection
 int difficulty = 0;
-int memory = 0;
+int memory_x = 0;
+int memory_y = 0;
 
 void createMatrix();
 void display();
@@ -304,22 +305,29 @@ EFFECTS: place horizontal input based on last memorized input
 */
 int insertHorizontal()
 {
+    srand((unsigned)time(NULL));
+    double e;
+    for(int x = 0; x < 5; x++)
+        e += ran_expo(0.0005);
+    if(e > 300)
+    {
     for (int i = 0; i < ROWS; ++i)
             {
                 for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(matrix[i][j] == memory && j > 0 && j < COLS - 1)
+                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1)
                     {
                         matrix[i][j+1] = 2;
-                        memory = j;
+                        memory_y = j+1;
                     }
-                    else if(matrix[i][j] == memory && j > 0 && j < COLS - 1)
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1)
                     {
                         matrix[i][j-1] = 2;
-                        memory = j;
+                        memory_y = j-1;
                     }
                 }
             }
+    }
 }
 /*
 REQUIRES: nothing
@@ -396,22 +404,29 @@ EFFECTS: place vertical input based on last memorized input
 */
 int insertVertical()
 {
+    srand((unsigned)time(NULL));
+    double e;
+    for(int x = 0; x < 5; x++)
+        e += ran_expo(0.0005);
+    if(e > 300)
+    {
     for (int i = 0; i < ROWS; ++i)
             {
                 for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(matrix[i][j] == memory && i > 0 && i < ROWS - 1)
+                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1)
                     {
                         matrix[i+1][j] = 2;
-                        memory = j;
+                        memory_x = i+1;
                     }
-                    else if(matrix[i][j] == memory && i > 0 && i < ROWS - 1)
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1)
                     {
                         matrix[i-1][j] = 2;
-                        memory = j;
+                        memory_x = i-1;
                     }
                 }
             }
+    }
 }
 /*
 REQUIRES: nothing
@@ -488,22 +503,31 @@ EFFECTS: place oblique input based on last memorized input
 */
 int insertOblique()
 {
+    srand((unsigned)time(NULL));
+    double e;
+    for(int x = 0; x < 5; x++)
+        e += ran_expo(0.0005);
+    if(e > 300)
+    {
     for (int i = 0; i < ROWS; ++i)
             {
                 for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(matrix[i][j] == memory && i > 0 && i < ROWS - 1 && j < COLS - 1)
+                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1)
                     {
                         matrix[i+1][j+1] = 2;
-                        memory = j;
+                        memory_x = i+1;
+                        memory_y = j+1;
                     }
-                    else if(matrix[i][j] == memory && i > 0 && i < ROWS - 1 && j < COLS - 1)
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1)
                     {
                         matrix[i-1][j-1] = 2;
-                        memory = j;
+                        memory_x = i-1;
+                        memory_y = j-1;
                     }
                 }
             }
+    }
 }
 /*
 REQUIRES: nothing
