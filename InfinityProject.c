@@ -85,6 +85,7 @@ char guide[] = "  0   1   2   3   4   5   6  ";
 int token;        // Current player Turn
 int selected = 0; // Current Player Column selection
 int difficulty = 0;
+int memory = 0;
 
 void createMatrix();
 void display();
@@ -299,6 +300,30 @@ int CheckHorizontal(int token)
 /*
 REQUIRES: nothing
 
+EFFECTS: place horizontal input based on last memorized input
+*/
+int insertHorizontal()
+{
+    for (int i = 0; i < ROWS; ++i)
+            {
+                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(matrix[i][j] == memory && j > 0 && j < COLS - 1)
+                    {
+                        matrix[i][j+1] = 2;
+                        memory = j;
+                    }
+                    else if(matrix[i][j] == memory && j > 0 && j < COLS - 1)
+                    {
+                        matrix[i][j-1] = 2;
+                        memory = j;
+                    }
+                }
+            }
+}
+/*
+REQUIRES: nothing
+
 EFFECTS: block human input on the horizontal axis using exponential distribution
 */
 int blockHorizontal()
@@ -367,6 +392,30 @@ int blockHorizontal()
 /*
 REQUIRES: nothing
 
+EFFECTS: place vertical input based on last memorized input
+*/
+int insertVertical()
+{
+    for (int i = 0; i < ROWS; ++i)
+            {
+                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(matrix[i][j] == memory && i > 0 && i < ROWS - 1)
+                    {
+                        matrix[i+1][j] = 2;
+                        memory = j;
+                    }
+                    else if(matrix[i][j] == memory && i > 0 && i < ROWS - 1)
+                    {
+                        matrix[i-1][j] = 2;
+                        memory = j;
+                    }
+                }
+            }
+}
+/*
+REQUIRES: nothing
+
 EFFECTS: block human input on the vertical axis using exponential distribution
 */
 int blockVertical()
@@ -431,6 +480,30 @@ int blockVertical()
             } 
         }
     }
+}
+/*
+REQUIRES: nothing
+
+EFFECTS: place oblique input based on last memorized input
+*/
+int insertOblique()
+{
+    for (int i = 0; i < ROWS; ++i)
+            {
+                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
+                {
+                    if(matrix[i][j] == memory && i > 0 && i < ROWS - 1 && j < COLS - 1)
+                    {
+                        matrix[i+1][j+1] = 2;
+                        memory = j;
+                    }
+                    else if(matrix[i][j] == memory && i > 0 && i < ROWS - 1 && j < COLS - 1)
+                    {
+                        matrix[i-1][j-1] = 2;
+                        memory = j;
+                    }
+                }
+            }
 }
 /*
 REQUIRES: nothing
