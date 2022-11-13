@@ -87,6 +87,7 @@ int selected = 0; // Current Player Column selection
 int difficulty = 0;
 int memory_x = 0;
 int memory_y = 0;
+int first_move = 0;
 
 void createMatrix();
 void display();
@@ -271,7 +272,24 @@ void add_token()
         }
     }
 }
+/*
+REQUIRES: nothing
 
+EFFECTS: generate first position randomly
+*/
+int randomInsert()
+{
+    int lower = 0, upper = 6, count = 1;
+ 
+    srand(time(0));
+    int i;
+    for (i = 0; i < count; i++) {
+        memory_x = (rand() % (upper - lower + 1)) + lower;
+        memory_y = (rand() % (upper - lower + 1)) + lower;
+    }
+    if(matrix[memory_x][memory_y] == 0)
+        matrix[memory_x][memory_y] = 2;
+}
 /*
 REQUIRES:
  - token to check the player's input
@@ -307,20 +325,38 @@ int insertHorizontal()
 {
     srand((unsigned)time(NULL));
     double e;
+    double e2;
     for(int x = 0; x < 5; x++)
+    {
         e += ran_expo(0.0005);
-    if(e > 300)
+        e2 += ran_expo(0.002);
+    }
+    if(e > 300 && first_move = 1)
     {
     for (int i = 0; i < ROWS; ++i)
             {
                 for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1)
+                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1 && matrix[i][j+1] == 0 && matrix[i][j-1] == 0)
+                    {
+                        if(e2 > 300)
+                        {
+                            matrix[i][j+1] = 2;
+                            memory_y = j+1;
+                        }
+                        else
+                        {
+                            matrix[i][j-1] = 2;
+                            memory_y = j-1;
+
+                        }
+                    }
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1 && matrix[i][j+1] == 0)
                     {
                         matrix[i][j+1] = 2;
                         memory_y = j+1;
                     }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1)
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1 && matrix[i][j-1] == 0)
                     {
                         matrix[i][j-1] = 2;
                         memory_y = j-1;
@@ -346,11 +382,11 @@ int blockHorizontal()
         {
             for (int i = 0; i < ROWS; ++i)
             {
-                for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
+                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == 0)
                         matrix[i+1][j] = 2;
-                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
+                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == 0)
                         matrix[i-1][j] = 2;
                 }
             }
@@ -366,11 +402,11 @@ int blockHorizontal()
         {
             for (int i = 0; i < ROWS; ++i)
             {
-                for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
+                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == 0)
                         matrix[i+1][j] = 2;
-                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
+                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == 0)
                         matrix[i-1][j] = 2;
                 }
             }
@@ -386,11 +422,11 @@ int blockHorizontal()
         {
             for (int i = 0; i < ROWS; ++i)
             {
-                for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == NULL)
+                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == 0)
                         matrix[i+1][j] = 2;
-                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == NULL)
+                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == 0)
                         matrix[i-1][j] = 2;
                 }
             }
@@ -406,20 +442,37 @@ int insertVertical()
 {
     srand((unsigned)time(NULL));
     double e;
+    double e2;
     for(int x = 0; x < 5; x++)
+    {
         e += ran_expo(0.0005);
-    if(e > 300)
+        e2 += ran_expo(0.002);
+    }
+    if(e > 300 && first_move = 1)
     {
     for (int i = 0; i < ROWS; ++i)
             {
                 for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1)
+                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && matrix[i+1][j] == 0 && matrix[i-1][j] == 0)
+                    {
+                        if(e2 > 100)
+                        {
+                            matrix[i+1][j] = 2;
+                            memory_x = i+1;
+                        }
+                        else
+                        {
+                            matrix[i-1][j] = 2;
+                            memory_x = i-1;
+                        }
+                    }
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && matrix[i+1][j] == 0)
                     {
                         matrix[i+1][j] = 2;
                         memory_x = i+1;
                     }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1)
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && matrix[i-1][j] == 0)
                     {
                         matrix[i-1][j] = 2;
                         memory_x = i-1;
@@ -445,11 +498,11 @@ int blockVertical()
         {
             for (int j = 0; j < COLS; ++i)
             {
-                for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
+                for (int i = 0; i < ROWS; ++j) // 4 is the number of ways of connecting four tokens in one row
                 {
-                    if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
+                    if(j < COLS - 1 && matrix[i][j] == 1 && matrix[i][j+1] == 0)
                         matrix[i][j+1] = 2;
-                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
+                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == 0)
                         matrix[i][j-1] = 2;
                 }
             } 
@@ -485,7 +538,7 @@ int blockVertical()
         {
             for (int j = 0; j < COLS; ++i)
             {
-                for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
+                for (int i = 0; i < 3; ++j)
                 {
                     if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
                         matrix[i][j+1] = 2;
@@ -505,21 +558,40 @@ int insertOblique()
 {
     srand((unsigned)time(NULL));
     double e;
+    double e2;
     for(int x = 0; x < 5; x++)
+    {
         e += ran_expo(0.0005);
-    if(e > 300)
+        e2 += ran_expo(0.002);
+    }
+    if(e > 300 && first_move = 1)
     {
     for (int i = 0; i < ROWS; ++i)
             {
-                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
+                for (int j = 0; j < COLS; ++j)
                 {
-                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1)
+                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1 && matrix[i+1][j+1] == 0 && matrix[i-1][j-1] == 0)
+                    {
+                        if(e2 > 100)
+                        {
+                            matrix[i+1][j+1] = 2;
+                            memory_x = i+1;
+                            memory_y = j+1; 
+                        }
+                        else
+                        {
+                            matrix[i-1][j-1] = 2;
+                            memory_x = i-1;
+                            memory_y = j-1;   
+                        }
+                    }
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1 && matrix[i+1][j+1] == 0)
                     {
                         matrix[i+1][j+1] = 2;
                         memory_x = i+1;
                         memory_y = j+1;
                     }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1)
+                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1 && matrix[i-1][j-1] == 0)
                     {
                         matrix[i-1][j-1] = 2;
                         memory_x = i-1;
