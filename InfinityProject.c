@@ -2,31 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-
-/*
-USE EXPONENTIAL DISTRIBUTION IN ORDER TO PREDICT WHEN TO BLOCK, PLACE IN SMART WAYS DEPENDING ON DIFFICULTY
-
-Predict block vertically
-    If above == null , below == 1 and in bound => place
-    If below == null , above == 1 and in bound => place
-Predict block horizontally
-    If left == null , right == 1 and in bound => place
-    If right == null , left == 1 and in bound => place
-Predict block oblique 1
-    If uLeft == null , lRight == 1 and in bound => place
-    If lRight == null , uLeft == 1 and in bound => place
-Predict block oblique 2
-    If uRight == null , lLeft == 1 and in bound => place
-    If lLeft == null , uRight == 1 and in bound => place
-
-Predict win vertically
-    If 
-Predict win horizontally
-Predict win oblique 1
-Predict win oblique 2
-
-
-*/
+// #include <conio.h>
 
 /*
 TEST CASES:
@@ -68,14 +44,16 @@ Propt the user to re-enter a valid column index when the user enters:
 Handle invalid(NaN) input for placing balls: check
 
 
-*/
-
+*/typedef enum {
+    empty = 0,
+    player = 1,
+    bot = 2
+}State;
 int hour = 0, minute = 0, second = 0;
 
 #define ROWS 6
 #define COLS 7
 
-int matrix[ROWS][COLS]; // A 2D Array representing the game board
 char players[2][64];    // Holds the players names
 float timePerPlayer[2]; // stores the total time taken by each player
 
@@ -84,10 +62,6 @@ char guide[] = "  0   1   2   3   4   5   6  ";
 
 int token;        // Current player Turn
 int selected = 0; // Current Player Column selection
-int difficulty = 0;
-int memory_x = 0;
-int memory_y = 0;
-int first_move = 0;
 
 void createMatrix();
 void display();
@@ -101,51 +75,6 @@ void tieTime();
 void replaceSpaces(char p[32]);
 
 /*
-REQUIRES: non-zero lambda
-
-EFFECTS: return exponential random variable
-*/
-double ran_expo(double lambda){
-    double u;
-    u = rand() / (RAND_MAX + 1.0);
-    return -log(1- u) / lambda;
-}
-/*
-REQUIRES: non-zero lambda
-
-EFFECTS: return difficulty level based on exponential random variable value
-*/
-void difficulty(double lambda)
-{
-    double x = ran_expo(lambda);
-    if(x > 100 && x < 200)
-        difficulty = 1;
-    else if(x > 200)
-        difficulty = 2;
-    else
-        difficulty = 3;
-}
-
-/*
-REQUIRES:
- - nothing
-EFFECTS:
- - Creating A 2D Array and initiallizing all the values to 0
- - Instantiate all entries to 0 (fill in the matrix)
-*/
-
-void createMatrix()
-{
-    for (int i = 0; i < ROWS; i++)
-    {
-        for (int j = 0; j < COLS; j++)
-        {
-            matrix[i][j] = 0;
-        }
-    }
-}
-
-/*
 REQUIRES:
  - nothing
 EFFECTS:
@@ -153,14 +82,14 @@ EFFECTS:
  - Display/Print the matrix with an indexed square design
 */
 
-void display()
+void display(State board[ROWS][COLS])
 {
     printf("%s\n", border);
     for (int i = 0; i < ROWS; i++)
     {
         for (int j = 0; j < COLS; j++)
         {
-            printf("| %d ", matrix[i][j]);
+            printf("| %d ", board[i][j]);
         }
         printf("|\n");
     }
@@ -220,7 +149,7 @@ EFFECTS:
  - Choose valid place to drop the ball in & get the time taken for each player
 */
 
-void selecting()
+void selecting(State board[ROWS][COLS] )
 {
 
     clock_t start = clock();
@@ -234,15 +163,15 @@ void selecting()
     }
 
     // checks if the user entered a valid position
-    if ((selected <= 6 && selected >= 0) && matrix[0][selected] == 0)
+    if ((selected <= 6 && selected >= 0) && board[0][selected] == 0)
     {
-        add_token();
+        add_token(board);
         token = (token == 1) ? 2 : 1; // flipping the token after adding it
     }
     else
     {
         printf("Invalid selection. Please select a column between 0 and 6");
-        selecting();
+        selecting(board);
     }
 
     clock_t end = clock();
@@ -260,36 +189,19 @@ EFFECTS:
  - drop the item into the matrix (gravity simulation)
  - by adding the token to the last available row
 */
-void add_token()
+void add_token(State board[ROWS][COLS])
 {
     int curRow;
     for (curRow = ROWS - 1; curRow >= 0; curRow--)
     {
-        if (matrix[curRow][selected] == 0)
+        if (board[curRow][selected] == 0)
         {
-            matrix[curRow][selected] = token;
+            board[curRow][selected] = token;
             break;
         }
     }
 }
-/*
-REQUIRES: nothing
 
-EFFECTS: generate first position randomly
-*/
-int randomInsert()
-{
-    int lower = 0, upper = 6, count = 1;
- 
-    srand(time(0));
-    int i;
-    for (i = 0; i < count; i++) {
-        memory_x = (rand() % (upper - lower + 1)) + lower;
-        memory_y = (rand() % (upper - lower + 1)) + lower;
-    }
-    if(matrix[memory_x][memory_y] == 0)
-        matrix[memory_x][memory_y] = 2;
-}
 /*
 REQUIRES:
  - token to check the player's input
@@ -297,7 +209,7 @@ REQUIRES:
 EFFECTS:
  - Be able to check if the player won horizontally via incrementing the counter in case an index had a player input.
 */
-int CheckHorizontal(int token)
+int CheckHorizontal(State board[ROWS][COLS],int token)
 {
     int counter;
     for (int i = 0; i < ROWS; ++i)
@@ -307,7 +219,7 @@ int CheckHorizontal(int token)
             counter = 0;
             for (int k = 0; k < 4; ++k) // 4 in a row
             {
-                if (matrix[i][j + k] == token)
+                if (board[i][j + k] == token)
                     counter++;
             }
             if (counter == 4)
@@ -317,398 +229,6 @@ int CheckHorizontal(int token)
     return 0;
 }
 /*
-REQUIRES: nothing
-
-EFFECTS: place horizontal input based on last memorized input
-*/
-int insertHorizontal()
-{
-    srand((unsigned)time(NULL));
-    double e;
-    double e2;
-    for(int x = 0; x < 5; x++)
-    {
-        e += ran_expo(0.0005);
-        e2 += ran_expo(0.002);
-    }
-    if(e > 300 && first_move = 1)
-    {
-    for (int i = 0; i < ROWS; ++i)
-            {
-                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
-                {
-                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1 && matrix[i][j+1] == 0 && matrix[i][j-1] == 0)
-                    {
-                        if(e2 > 300)
-                        {
-                            matrix[i][j+1] = 2;
-                            memory_y = j+1;
-                        }
-                        else
-                        {
-                            matrix[i][j-1] = 2;
-                            memory_y = j-1;
-
-                        }
-                    }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1 && matrix[i][j+1] == 0)
-                    {
-                        matrix[i][j+1] = 2;
-                        memory_y = j+1;
-                    }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && j > 0 && j < COLS - 1 && matrix[i][j-1] == 0)
-                    {
-                        matrix[i][j-1] = 2;
-                        memory_y = j-1;
-                    }
-                }
-            }
-    }
-}
-/*
-REQUIRES: nothing
-
-EFFECTS: block human input on the horizontal axis using exponential distribution
-*/
-int blockHorizontal()
-{
-    if(difficulty == 1)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.075);
-        if(e > 300)
-        {
-            for (int i = 0; i < ROWS; ++i)
-            {
-                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
-                {
-                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == 0)
-                        matrix[i+1][j] = 2;
-                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == 0)
-                        matrix[i-1][j] = 2;
-                }
-            }
-        }
-    }
-    else if(difficulty == 2)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.005);
-        if(e > 300)
-        {
-            for (int i = 0; i < ROWS; ++i)
-            {
-                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
-                {
-                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == 0)
-                        matrix[i+1][j] = 2;
-                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == 0)
-                        matrix[i-1][j] = 2;
-                }
-            }
-        }
-    }
-    else if(difficulty == 3)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.0005);
-        if(e > 300)
-        {
-            for (int i = 0; i < ROWS; ++i)
-            {
-                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
-                {
-                    if(i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j] == 0)
-                        matrix[i+1][j] = 2;
-                    else if(i > 0 && matrix[i][j] == 1 && matrix[i-1][j] == 0)
-                        matrix[i-1][j] = 2;
-                }
-            }
-        }
-    }
-}
-/*
-REQUIRES: nothing
-
-EFFECTS: place vertical input based on last memorized input
-*/
-int insertVertical()
-{
-    srand((unsigned)time(NULL));
-    double e;
-    double e2;
-    for(int x = 0; x < 5; x++)
-    {
-        e += ran_expo(0.0005);
-        e2 += ran_expo(0.002);
-    }
-    if(e > 300 && first_move = 1)
-    {
-    for (int i = 0; i < ROWS; ++i)
-            {
-                for (int j = 0; j < COLS; ++j) // 4 is the number of ways of connecting four tokens in one row
-                {
-                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && matrix[i+1][j] == 0 && matrix[i-1][j] == 0)
-                    {
-                        if(e2 > 100)
-                        {
-                            matrix[i+1][j] = 2;
-                            memory_x = i+1;
-                        }
-                        else
-                        {
-                            matrix[i-1][j] = 2;
-                            memory_x = i-1;
-                        }
-                    }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && matrix[i+1][j] == 0)
-                    {
-                        matrix[i+1][j] = 2;
-                        memory_x = i+1;
-                    }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && matrix[i-1][j] == 0)
-                    {
-                        matrix[i-1][j] = 2;
-                        memory_x = i-1;
-                    }
-                }
-            }
-    }
-}
-/*
-REQUIRES: nothing
-
-EFFECTS: block human input on the vertical axis using exponential distribution
-*/
-int blockVertical()
-{
-    if(difficulty == 1)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.075);
-        if(e > 300)
-        {
-            for (int j = 0; j < COLS; ++i)
-            {
-                for (int i = 0; i < ROWS; ++j) // 4 is the number of ways of connecting four tokens in one row
-                {
-                    if(j < COLS - 1 && matrix[i][j] == 1 && matrix[i][j+1] == 0)
-                        matrix[i][j+1] = 2;
-                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == 0)
-                        matrix[i][j-1] = 2;
-                }
-            } 
-        }
-    }
-    else if(difficulty == 2)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.005);
-        if(e > 300)
-        {
-            for (int j = 0; j < COLS; ++i)
-            {
-                for (int i = 0; i < 3; ++j) // 4 is the number of ways of connecting four tokens in one row
-                {
-                    if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
-                        matrix[i][j+1] = 2;
-                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
-                        matrix[i][j-1] = 2;
-                }
-            } 
-        }
-    }
-    else if(difficulty == 3)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.0005);
-        if(e > 300)
-        {
-            for (int j = 0; j < COLS; ++i)
-            {
-                for (int i = 0; i < 3; ++j)
-                {
-                    if(j < 3 && matrix[i][j] == 1 && matrix[i][j+1] == NULL)
-                        matrix[i][j+1] = 2;
-                    else if(j > 0 && matrix[i][j] == 1 && matrix[i][j-1] == NULL)
-                        matrix[i][j-1] = 2;
-                }
-            } 
-        }
-    }
-}
-/*
-REQUIRES: nothing
-
-EFFECTS: place oblique input based on last memorized input
-*/
-int insertOblique()
-{
-    srand((unsigned)time(NULL));
-    double e;
-    double e2;
-    for(int x = 0; x < 5; x++)
-    {
-        e += ran_expo(0.0005);
-        e2 += ran_expo(0.002);
-    }
-    if(e > 300 && first_move = 1)
-    {
-    for (int i = 0; i < ROWS; ++i)
-            {
-                for (int j = 0; j < COLS; ++j)
-                {
-                    if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1 && matrix[i+1][j+1] == 0 && matrix[i-1][j-1] == 0)
-                    {
-                        if(e2 > 100)
-                        {
-                            matrix[i+1][j+1] = 2;
-                            memory_x = i+1;
-                            memory_y = j+1; 
-                        }
-                        else
-                        {
-                            matrix[i-1][j-1] = 2;
-                            memory_x = i-1;
-                            memory_y = j-1;   
-                        }
-                    }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1 && matrix[i+1][j+1] == 0)
-                    {
-                        matrix[i+1][j+1] = 2;
-                        memory_x = i+1;
-                        memory_y = j+1;
-                    }
-                    else if(matrix[i][j] == 2 && i == memory_x && j == memory_y && i > 0 && i < ROWS - 1 && j < COLS - 1 && matrix[i-1][j-1] == 0)
-                    {
-                        matrix[i-1][j-1] = 2;
-                        memory_x = i-1;
-                        memory_y = j-1;
-                    }
-                }
-            }
-    }
-}
-/*
-REQUIRES: nothing
-
-EFFECTS: block human input on the oblique axis using exponential distribution
-*/
-int blockOblique()
-{
-    if (difficulty == 1)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.075);
-        if(e > 300)
-        {
-            for (int i = 0; i < ROWS; i++)
-            {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
-                            matrix[i+1][j+1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
-                            matrix[i-1][j+1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
-                            matrix[i-1][j-1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
-                            matrix[i+1][j-1] = 2;
-                    }
-            }
-        }
-    }
-    else if (difficulty == 2)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.005);
-        if(e > 300)
-        {
-            for (int i = 0; i < ROWS; i++)
-            {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
-                            matrix[i+1][j+1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
-                            matrix[i-1][j+1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
-                            matrix[i-1][j-1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
-                            matrix[i+1][j-1] = 2;
-                    }
-            }
-        }
-    }
-    else if (difficulty == 3)
-    {
-        srand((unsigned)time(NULL));
-        double e;
-        for(int x = 0; x < 5; x++)
-            e += ran_expo(0.0005);
-        if(e > 300)
-        {
-            for (int i = 0; i < ROWS; i++)
-            {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (j < COLS - 1 && i < ROWS - 1 && matrix[i][j] == 1 && matrix[i+1][j+1] == NULL)
-                            matrix[i+1][j+1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i > 0 && j < COLS - 1 && matrix[i][j] == 1 && matrix[i-1][j+1] == NULL)
-                            matrix[i-1][j+1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i > 0 && j > 0 && matrix[i][j] == 1 && matrix[i-1][j-1] == NULL)
-                            matrix[i-1][j-1] = 2;
-                    }
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (i < ROWS - 1 && j < > 0 && matrix[i][j] == 1 && matrix[i+1][j-1] == NULL)
-                            matrix[i+1][j-1] = 2;
-                    }
-            }
-        }
-    }
-}
-/*
 REQUIRES:
  - token to check player input
 
@@ -716,7 +236,7 @@ EFFECTS:
  - Be able to check if the player won vertically via incrementing the counter in case an index had a player input.
 */
 
-int CheckVertical(int token)
+int CheckVertical(State board[ROWS][COLS],int token)
 {
     int counter;
     for (int j = 0; j < COLS; ++j)
@@ -726,7 +246,7 @@ int CheckVertical(int token)
             counter = 0;
             for (int k = 0; k < 4; ++k) // 4 in a row
             {
-                if (matrix[i + k][j] == token)
+                if (board[i + k][j] == token)
                     counter++;
             }
             if (counter == 4)
@@ -744,7 +264,7 @@ EFFECTS:
  - Check if the player (1 or 2) won diagonally by counting the lines/direct diagonal coins of the same number
 */
 
-int CheckDiagonals(int token)
+int CheckDiagonals(State board[ROWS][COLS],int token)
 {
     int counter;
 
@@ -757,7 +277,7 @@ int CheckDiagonals(int token)
                 counter = 0;
                 for (int a = 0; a < 4; ++a)
                 {
-                    if (matrix[i + a][j + a] == token)
+                    if (board[i + a][j + a] == token)
                         counter++;
                 }
                 if (counter == 4)
@@ -771,7 +291,7 @@ int CheckDiagonals(int token)
                 counter = 0;
                 for (int a = 0; a < 4; ++a)
                 {
-                    if (matrix[i - a][j + a] == token)
+                    if (board[i - a][j + a] == token)
                         counter++;
                 }
                 if (counter == 4)
@@ -789,9 +309,9 @@ EFFECTS:
  - check if any player won through a horizontal, vertical or diagonal input
 */
 
-int check(int token)
+int check(State board[ROWS][COLS],int token)
 {
-    return CheckHorizontal(token) || CheckVertical(token) || CheckDiagonals(token);
+    return CheckHorizontal(board,token) || CheckVertical(board,token) || CheckDiagonals(board,token);
 }
 
 /*
@@ -820,13 +340,13 @@ REQUIRES:
 EFFECTS:
  - Determine whether the matrix is full or not by counting the number of entries that are not equal to 0 each.
 */
-int tieFull()
+int tieFull(State board[ROWS][COLS])
 {
     int countEntries = 0;
     for (int i = 0; i < ROWS; i++)
     {
         for (int j = 0; j < COLS; j++)
-            if (matrix[i][j] != 0)
+            if (board[i][j] != 0)
                 countEntries++;
     }
     if (countEntries == 42)
@@ -876,31 +396,31 @@ void print_rules() {
 
 int main()
 {
-    createMatrix();
+    State matrix[ROWS][COLS] ={0};
     print_rules();
-    display();
+    display(matrix);
     enterNames();
     coinToss();
 
-    while (!(check(1) || check(2) || tieFull()))
+    while (!(check(matrix,1) || check(matrix,2) || tieFull(matrix)))
     {
         printf("%s, your turn!\n", players[token - 1]);
 
-        selecting();
+        selecting(matrix);
 
         printf("\n\n");
 
-        display();
+        display(matrix);
     }
-    if (check(1))
+    if (check(matrix,1))
     {
         printf("\n\n%s wins!\n\n", players[0]);
     }
-    if (check(2))
+    if (check(matrix,2))
     {
         printf("\n\n%s wins!\n\n", players[1]);
     }
-    if (tieFull())
+    if (tieFull(matrix))
     {
         tieTime();
     }
