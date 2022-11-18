@@ -19,8 +19,8 @@ Horizontal & Vertical:
 
 Diagonal:
 
-[1]             starting at indeces 0,1,2,3 for rows 1,2,3
-   [1]          it will check the first 3 rows and 4 columns accotdingly
+[1]             starting at indices 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accordingly
       [1]       for all the lower diagonals possible in the game
          [1]
 
@@ -32,18 +32,160 @@ Diagonal:
 
 same goes to the value [2]
 
+Easy 
+TEST CASE: Attempt to win horizontally [1,1,1,1,2,..] =>win, [1,2,1,2,1,..] => nothing
+TEST CASE: Attempt to win vertically    
+[1]   [2]
+[1] , [2]   starting at row 0,1,2 for all columns: win
+[1]   [2]
+[1]   [2]
+TEST CASE: Attempt to win diagonally
+[1]             starting at indeies 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accordingly
+      [1]       for all the lower diagonals possible in the game
+         [1]    => win
+         [1]    starting at indices 0,1,2,3 for rows 4,5,6
+      [1]       it will check the last 3 rows and first 4 columns
+   [1]          accordingly for all the upper diagonals possible in the game
+[1]
 
+TEST CASE: Attempt to block horizontally [1,1,1,2,...]
+TEST CASE: Attempt to block vertically
+[1]
+[1]
+[1]
+[2]
+[...]
+TEST CASE: Attempt to block diagonally
+[2]             starting at indices 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accordingly
+      [1]       for all the lower diagonals possible in the game
+         [1]    => block
+         [2]    starting at indices 0,1,2,3 for rows 4,5,6
+      [1]       it will check the last 3 rows and first 4 columns
+   [1]          accordingly for all the upper diagonals possible in the game
+[1]
+Moves to capitulate
+
+Medium
+TEST CASE: Attempt to win horizontally [1,1,1,1,2,..] =>win, [1,2,1,2,1,..] => nothing
+TEST CASE: Attempt to win vertically    
+[1]   [2]
+[1] , [2]   starting at row 0,1,2 for all columns: win
+[1]   [2]
+[1]   [2]
+TEST CASE: Attempt to win diagonally
+[1]             starting at indices 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accordingly
+      [1]       for all the lower diagonals possible in the game
+         [1]    => win
+         [1]    starting at indices 0,1,2,3 for rows 4,5,6
+      [1]       it will check the last 3 rows and first 4 columns
+   [1]          accordingly for all the upper diagonals possible in the game
+[1]
+
+TEST CASE: Attempt to block horizontally [1,1,1,2,...]
+TEST CASE: Attempt to block vertically
+[1]
+[1]
+[1]
+[2]
+[...]
+TEST CASE: Attempt to block diagonally
+[2]             starting at indices 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accordingly
+      [1]       for all the lower diagonals possible in the game
+         [1]    => block
+         [2]    starting at indices 0,1,2,3 for rows 4,5,6
+      [1]       it will check the last 3 rows and first 4 columns
+   [1]          accordingly for all the upper diagonals possible in the game
+[1]
+Moves to capitulate
+
+Hard
+TEST CASE: Attempt to win horizontally [1,1,1,1,2,..] =>win, [1,2,1,2,1,..] => nothing
+TEST CASE: Attempt to win vertically    
+[1]   [2]
+[1] , [2]   starting at row 0,1,2 for all columns: win
+[1]   [2]
+[1]   [2]
+TEST CASE: Attempt to win diagonally
+[1]             starting at indices 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accordingly
+      [1]       for all the lower diagonals possible in the game
+         [1]    => win
+         [1]    starting at indices 0,1,2,3 for rows 4,5,6
+      [1]       it will check the last 3 rows and first 4 columns
+   [1]          accordingly for all the upper diagonals possible in the game
+[1]
+
+TEST CASE: Attempt to block horizontally [1,1,1,2,...]
+TEST CASE: Attempt to block vertically
+[1]
+[1]
+[1]
+[2]
+[...]
+TEST CASE: Attempt to block diagonally
+[2]             starting at indices 0,1,2,3 for rows 1,2,3
+   [1]          it will check the first 3 rows and 4 columns accordingly
+      [1]       for all the lower diagonals possible in the game
+         [1]    => block
+         [2]    starting at indices 0,1,2,3 for rows 4,5,6
+      [1]       it will check the last 3 rows and first 4 columns
+   [1]          accordingly for all the upper diagonals possible in the game
+[1]
+Moves to capitulate
 
 
 Out of bounds & invalid:
 
 Handle invalid input when inserting into a column at out of bounds indices:
-Propt the user to re-enter a valid column index when the user enters:
+Prompt the user to re-enter a valid column index when the user enters:
 - a negative number (e.g. -1)
 - a number greater than the number of columns(6)
 - a non-integer value (e.g. "a")
 
 Handle invalid(NaN) input for placing balls: check
+
+
+If the opponent insert in the following columns in order:
+0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6 // trying to win vertically
+
+easy won after making 11 moves;
+
+medium won after making 7 moves
+
+hard won after making 7 moves;
+
+If the opponent insert in the following columns in order:
+0,0,1,1,2,2,3,3,4,4,5,5,6,6
+
+easy won after making 10 moves;
+
+medium won after making 9 moves
+
+hard won after making 5 moves;
+
+If the opponent insert in the following columns in order:
+0,1,2,3,4,5,6,0,1...  \\ trying to win in a diagonal 1
+
+easy won after making 5 moves;
+
+medium won after making 5 moves
+
+hard won after making 4 moves;
+
+If the opponent insert in the following columns in order:
+6,5,4,3,2,1,0,6,5,4...  \\ trying to win in a diagonal 1
+
+easy won after making 5 moves;
+
+medium won after making 5 moves
+
+hard won after making 4 moves;
+
+
 
 
 */
@@ -107,7 +249,7 @@ int Min(int a, int b)
 /*
 REQUIRES: nothing
 
-EFFECTS: assign legal moves
+EFFECTS: determine legal & available places for moves
 */
 void legalmoves(State board[ROWS][COLS], position moves[COLS])
 {
@@ -166,11 +308,13 @@ void enterNames()
     player1[strcspn(player1, "\n")] = 0;
     replaceSpaces(player1);
 
+    fflush(stdin);
     char player2[32];
     printf("\nPlayer 2 - Enter your name:");
     fgets(player2, 32, stdin);
     player2[strcspn(player2, "\n")] = 0;
     replaceSpaces(player2);
+    fflush(stdin);
 
     strcpy(players[0], player1);
     strcpy(players[1], player2);
@@ -266,12 +410,12 @@ EFFECTS:
 int CheckHorizontal(State board[ROWS][COLS], State key)
 {
     int counter;
-    for (int i = 0; i < ROWS; ++i)
+    for (int i = 0; i < ROWS; i++)
     {
-        for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
+        for (int j = 0; j < 4; j++) // 4 is the number of ways of connecting four tokens in one row
         {
             counter = 0;
-            for (int k = 0; k < 4; ++k) // 4 in a row
+            for (int k = 0; k < 4; k++) // 4 in a row
             {
                 if (board[i][j + k] == key)
                     counter++;
@@ -293,12 +437,12 @@ EFFECTS:
 int CheckVertical(State board[ROWS][COLS], State key)
 {
     int counter;
-    for (int j = 0; j < COLS; ++j)
+    for (int j = 0; j < COLS; j++)
     {
-        for (int i = 0; i < 3; ++i) // 3 is the number of ways of connecting four tokens in one cloumn
+        for (int i = 0; i < 3; i++) // 3 is the number of ways of connecting four tokens in one cloumn
         {
             counter = 0;
-            for (int k = 0; k < 4; ++k) // 4 in a row
+            for (int k = 0; k < 4; k++) // 4 in a row
             {
                 if (board[i + k][j] == key)
                     counter++;
@@ -343,7 +487,7 @@ int CheckDiagonals(State board[ROWS][COLS], State key)
             for (int j = 0; j < 4; j++)
             {
                 counter = 0;
-                for (int a = 0; a < 4; ++a)
+                for (int a = 0; a < 4; a++)
                 {
                     if (board[i - a][j + a] == key)
                         counter++;
@@ -451,7 +595,7 @@ void print_rules()
 /*
 REQUIRES: non-nullable values of inputs
 
-EFFECTS: apply the minmax algorithm
+EFFECTS: apply the minmax algorithm (search for the best move at the given depth)
 */
 int minmax(State arr[ROWS][COLS], int isMaximizing, int depth, int alpha, int beta)
 {
@@ -511,7 +655,7 @@ int minmax(State arr[ROWS][COLS], int isMaximizing, int depth, int alpha, int be
 /*
 REQUIRES: nothing
 
-EFFECTS: evalute the score between the player and the computer
+EFFECTS: evalute the score between the player and the computer to determine who's at an advantage
 */
 int evaluate(State arr[ROWS][COLS])
 {
@@ -553,7 +697,7 @@ int evaluate(State arr[ROWS][COLS])
 /*
 REQUIRES: nothing
 
-EFFECTS: determine the best and optimal move to assign an input in the matrix
+EFFECTS: determine the best and optimal move to assign an input in the matrix using the minimax algorithm
 */
 position findBestmove(State arr[ROWS][COLS])
 {
@@ -670,7 +814,7 @@ int win(State board[ROWS][COLS])
 {
     if (boardFull(board))
         return -1;
-    for (int i = ROWS; i >= 0; i--)
+    for (int i = ROWS-1; i >= 0; i--)
     {
         for (int j = 0; j < COLS; j++)
         {
@@ -700,7 +844,7 @@ int win(State board[ROWS][COLS])
 /*
 REQUIRES: valid move
 
-EFFECTS: assign move to the computer
+EFFECTS: represents and assigns the computer's move
 */
 void computermove(State arr[ROWS][COLS], position move)
 {
@@ -770,13 +914,13 @@ int run()
         switch (difficulty)
         {
         case 0:
-            depthChanger = -1;
-            break;
-        case 1:
             depthChanger = 0;
             break;
+        case 1:
+            depthChanger = 1;
+            break;
         case 2:
-            depthChanger = 7;
+            depthChanger = 6;
             break;
         
         default:
