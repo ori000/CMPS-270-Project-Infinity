@@ -48,31 +48,9 @@ Handle invalid(NaN) input for placing balls: check
 
 
 */
-typedef enum
-{
-    EMPTY = 0,
-    PLAYER = 1,
-    BOT = 2
-} State;
 
-typedef struct
-{
-    int row;
-    int col;
-} position;
-
-int hour = 0, minute = 0, second = 0;
 
 int depthChanger = 7;
-
-#define ROWS 6
-#define COLS 7
-
-char players[2][64];    // Holds the players names
-float timePerPlayer[2]; // stores the total time taken by each player
-
-char border[] = " ----------------------------";
-char guide[] = "  0   1   2   3   4   5   6  ";
 
 int selected = 0; // Current Player Column selection
 

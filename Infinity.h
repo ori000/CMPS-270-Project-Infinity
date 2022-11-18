@@ -1,14 +1,14 @@
 typedef enum {
-    empty = 0,
-    player = 1,
-    bot = 2
+    EMPTY = 0,
+    PLAYER = 1,
+    BOT = 2
 }State;
 typedef struct
 {
     int row;
     int col;
 } position;
-int hour = 0, minute = 0, second = 0, depthChanger = 7;;
+int hour = 0, minute = 0, second = 0;
 
 #define ROWS 6
 #define COLS 7
@@ -19,8 +19,6 @@ float timePerPlayer[2]; // stores the total time taken by each player
 char border[] = " ----------------------------";
 char guide[] = "  0   1   2   3   4   5   6  ";
 
-// int token;        // Current player Turn
-int selected = 0; // Current Player Column selection
 
 void display(State board[ROWS][COLS]);
 void enterNames();
