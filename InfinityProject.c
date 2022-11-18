@@ -73,7 +73,6 @@ float timePerPlayer[2]; // stores the total time taken by each player
 char border[] = " ----------------------------";
 char guide[] = "  0   1   2   3   4   5   6  ";
 
-int token;        // Current player Turn
 int selected = 0; // Current Player Column selection
 
 void createMatrix();
@@ -206,6 +205,7 @@ EFFECTS:
 
 void enterNames()
 {
+    fflush(stdin);
     char player1[32];
     printf("\nPlayer 1 - Enter your name:");
     fgets(player1, 32, stdin);
@@ -238,7 +238,7 @@ State coinToss()
         key = 2;
     else
         key = 1;
-    printf("\n%s is the First to start!\n", players[token - 1]);
+    printf("\n%s is the First to start!\n", players[key - 1]);
     return key;
 }
 
@@ -278,7 +278,7 @@ void playerSelect(State board[ROWS][COLS], State key)
 
     // Adding the time of the total time taken by the player
     float seconds = (float)(end - start) / CLOCKS_PER_SEC;
-    timePerPlayer[(token == 1) ? 1 : 0] += seconds; // Take the opposite of the current token since it was flipped after selecting
+    timePerPlayer[(key == 1) ? 1 : 0] += seconds; // Take the opposite of the current token since it was flipped after selecting
     printf("%f", seconds);
 }
 
@@ -309,7 +309,7 @@ REQUIRES:
 EFFECTS:
  - Be able to check if the player won horizontally via incrementing the counter in case an index had a player input.
 */
-int CheckHorizontal(State board[ROWS][COLS], int token)
+int CheckHorizontal(State board[ROWS][COLS], State key)
 {
     int counter;
     for (int i = 0; i < ROWS; ++i)
@@ -319,7 +319,7 @@ int CheckHorizontal(State board[ROWS][COLS], int token)
             counter = 0;
             for (int k = 0; k < 4; ++k) // 4 in a row
             {
-                if (board[i][j + k] == token)
+                if (board[i][j + k] == key)
                     counter++;
             }
             if (counter == 4)
@@ -336,7 +336,7 @@ EFFECTS:
  - Be able to check if the player won vertically via incrementing the counter in case an index had a player input.
 */
 
-int CheckVertical(State board[ROWS][COLS], int token)
+int CheckVertical(State board[ROWS][COLS], State key)
 {
     int counter;
     for (int j = 0; j < COLS; ++j)
@@ -346,7 +346,7 @@ int CheckVertical(State board[ROWS][COLS], int token)
             counter = 0;
             for (int k = 0; k < 4; ++k) // 4 in a row
             {
-                if (board[i + k][j] == token)
+                if (board[i + k][j] == key)
                     counter++;
             }
             if (counter == 4)
@@ -364,7 +364,7 @@ EFFECTS:
  - Check if the player (1 or 2) won diagonally by counting the lines/direct diagonal coins of the same number
 */
 
-int CheckDiagonals(State board[ROWS][COLS], int token)
+int CheckDiagonals(State board[ROWS][COLS], State key)
 {
     int counter;
 
@@ -377,7 +377,7 @@ int CheckDiagonals(State board[ROWS][COLS], int token)
                 counter = 0;
                 for (int a = 0; a < 4; ++a)
                 {
-                    if (board[i + a][j + a] == token)
+                    if (board[i + a][j + a] == key)
                         counter++;
                 }
                 if (counter == 4)
@@ -391,7 +391,7 @@ int CheckDiagonals(State board[ROWS][COLS], int token)
                 counter = 0;
                 for (int a = 0; a < 4; ++a)
                 {
-                    if (board[i - a][j + a] == token)
+                    if (board[i - a][j + a] == key)
                         counter++;
                 }
                 if (counter == 4)
@@ -409,9 +409,9 @@ EFFECTS:
  - check if any player won through a horizontal, vertical or diagonal input
 */
 
-int check(State board[ROWS][COLS], int token)
+int check(State board[ROWS][COLS], State key)
 {
-    return CheckHorizontal(board, token) || CheckVertical(board, token) || CheckDiagonals(board, token);
+    return CheckHorizontal(board, key) || CheckVertical(board, key) || CheckDiagonals(board, key);
 }
 
 /*
@@ -718,15 +718,18 @@ int main()
     print_rules();
     State matrix[ROWS][COLS] = {0};
     State key = 1;
+    State ONE =1;
+    State TWO = 2;
     
     if (gameType == 0)
     {
         display(matrix);
         enterNames();
         key = coinToss();
-        while (!(check(matrix, 1) || check(matrix, 2) || tieFull(matrix)))
+        while (!(check(matrix, ONE) || check(matrix, TWO) || tieFull(matrix)))
         {
-            printf("%s, your turn!\n", players[token - 1]);
+            printf("%s, your turn!\n", players[key- 1]);
+            printf("Token: %d \n", key);
 
             playerSelect(matrix,key);
 
@@ -737,11 +740,11 @@ int main()
             if(key == PLAYER) key = BOT;
             else key = PLAYER;
         }
-        if (check(matrix, 1))
+        if (check(matrix, ONE))
         {
             printf("\n\n%s wins!\n\n", players[0]);
         }
-        if (check(matrix, 2))
+        if (check(matrix, TWO))
         {
             printf("\n\n%s wins!\n\n", players[1]);
         }
