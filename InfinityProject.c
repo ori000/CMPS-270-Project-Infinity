@@ -3,7 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdbool.h>
-#include <Infinity.h>
+#include "Infinity.h"
 
 // #include <conio.h>
 
