@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdbool.h>
+#include <Infinity.h>
 
 // #include <conio.h>
 
@@ -75,23 +76,6 @@ char guide[] = "  0   1   2   3   4   5   6  ";
 
 int selected = 0; // Current Player Column selection
 
-void createMatrix();
-void display();
-void enterNames();
-State coinToss();
-void playerSelect();
-void add_token();
-int check();
-int tieFull();
-void tieTime();
-void replaceSpaces();
-int evaluate();
-bool boardFull();
-int countCol();
-int countRow();
-int countDiag();
-int countDiagb();
-int win();
 
 /*
 REQUIRES:
