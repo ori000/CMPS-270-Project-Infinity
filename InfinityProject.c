@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include "Infinity.h"
 
-// #include <conio.h>
 
 /*
 TEST CASES:
@@ -77,43 +76,6 @@ bool boardFull(State board[ROWS][COLS])
         }
     }
     return true;
-}
-
-/*
-REQUIRES: non-nullable x
-
-EFFECTS: check whether x is valid (within interval)
-*/
-bool inInterval(int x, int min, int max)
-{ // inclusive
-    if (x <= max && x >= min)
-    {
-        return true;
-    }
-    return false;
-}
-
-/*
-REQUIRES: nothing
-
-EFFECTS: create a random move for the bot
-*/
-void randommove(State board[ROWS][COLS])
-{
-    int col;
-    do
-    {
-        col = rand() % 7;
-    } while (board[0][col] != EMPTY);
-
-    for (int i = ROWS - 1; i >= 0; i--)
-    {
-        if (board[i][col] == EMPTY)
-        {
-            board[i][col] = BOT;
-            return;
-        }
-    }
 }
 
 /*
@@ -831,7 +793,9 @@ int run()
                 run = 0;
                 break;
             }
+
             computermove(matrix, findBestmove(matrix));
+            
             display(matrix);
             if (win(matrix))
             {
