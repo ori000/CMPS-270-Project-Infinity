@@ -1,3 +1,9 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <stdbool.h>
+
 typedef enum {
     EMPTY = 0,
     PLAYER = 1,
@@ -35,8 +41,8 @@ void replaceSpaces(char p[32]);
 bool boardFull(State board[ROWS][COLS]);
 bool inInterval(int x, int min, int max);
 void randommove(State board[ROWS][COLS]);
-int max(int a, int b);
-int min(int a, int b);
+int Max(int a, int b);
+int Min(int a, int b);
 void legalmoves(State board[ROWS][COLS], position moves[COLS]);
 void playerSelect(State board[ROWS][COLS], State key);
 void print_rules();

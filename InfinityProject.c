@@ -79,6 +79,11 @@ bool boardFull(State board[ROWS][COLS])
     return true;
 }
 
+/*
+REQUIRES: non-nullable x
+
+EFFECTS: check whether x is valid (within interval)
+*/
 bool inInterval(int x, int min, int max)
 { // inclusive
     if (x <= max && x >= min)
@@ -88,6 +93,11 @@ bool inInterval(int x, int min, int max)
     return false;
 }
 
+/*
+REQUIRES: nothing
+
+EFFECTS: create a random move for the bot
+*/
 void randommove(State board[ROWS][COLS])
 {
     int col;
@@ -106,7 +116,12 @@ void randommove(State board[ROWS][COLS])
     }
 }
 
-int max(int a, int b)
+/*
+REQUIRES: nothing
+
+EFFECTS: find the max between a and b
+*/
+int Max(int a, int b)
 {
     if (a > b)
         return a;
@@ -114,7 +129,12 @@ int max(int a, int b)
         return b;
 }
 
-int min(int a, int b)
+/*
+REQUIRES: nothing
+
+EFFECTS: find the min between a and b
+*/
+int Min(int a, int b)
 {
     if (a > b)
         return b;
@@ -122,6 +142,11 @@ int min(int a, int b)
         return a;
 }
 
+/*
+REQUIRES: nothing
+
+EFFECTS: assign legal moves
+*/
 void legalmoves(State board[ROWS][COLS], position moves[COLS])
 {
     int cnt = 0;
@@ -142,6 +167,11 @@ void legalmoves(State board[ROWS][COLS], position moves[COLS])
     }
 }
 
+/*
+REQUIRES: nothing
+
+EFFECTS: display the matrix
+*/
 void display(State board[ROWS][COLS])
 {
     printf("%s\n", border);
@@ -456,6 +486,11 @@ void print_rules()
     printf("Let's start playing\n");
 }
 
+/*
+REQUIRES: non-nullable values of inputs
+
+EFFECTS: apply the minmax algorithm
+*/
 int minmax(State arr[ROWS][COLS], int isMaximizing, int depth, int alpha, int beta)
 {
     int score = evaluate(arr);
@@ -477,9 +512,9 @@ int minmax(State arr[ROWS][COLS], int isMaximizing, int depth, int alpha, int be
             {
                 arr[moves[i].row][moves[i].col] = BOT;
                 int eval = minmax(arr, 0, depth + 1, alpha, beta);
-                best = max(best, eval);
+                best = Max(best, eval);
                 arr[moves[i].row][moves[i].col] = EMPTY;
-                alpha = max(alpha, eval);
+                alpha = Max(alpha, eval);
                 if (beta <= alpha)
                     break;
             }
@@ -498,9 +533,9 @@ int minmax(State arr[ROWS][COLS], int isMaximizing, int depth, int alpha, int be
             {
                 arr[moves[i].row][moves[i].col] = PLAYER;
                 int eval = minmax(arr, 1, depth + 1, alpha, beta);
-                best = min(best, eval);
+                best = Min(best, eval);
                 arr[moves[i].row][moves[i].col] = EMPTY;
-                beta = min(beta, eval);
+                beta = Min(beta, eval);
                 if (beta <= alpha)
                     break;
             }
@@ -511,6 +546,11 @@ int minmax(State arr[ROWS][COLS], int isMaximizing, int depth, int alpha, int be
     }
 }
 
+/*
+REQUIRES: nothing
+
+EFFECTS: evalute the score between the player and the computer
+*/
 int evaluate(State arr[ROWS][COLS])
 {
     int tmp = win(arr);
@@ -548,6 +588,11 @@ int evaluate(State arr[ROWS][COLS])
     return scoreC - scoreP;
 }
 
+/*
+REQUIRES: nothing
+
+EFFECTS: determine the best and optimal move to assign an input in the matrix
+*/
 position findBestmove(State arr[ROWS][COLS])
 {
     int bestVal = -10000;
@@ -573,6 +618,12 @@ position findBestmove(State arr[ROWS][COLS])
     }
     return bestMove;
 }
+
+/*
+REQUIRES: non-nullable input values
+
+EFFECTS: count the number of consecutive keys on a column basis
+*/
 int countCol(State board[ROWS][COLS], int startRow, int startCol)
 {
     int cnt = 0;
@@ -587,6 +638,11 @@ int countCol(State board[ROWS][COLS], int startRow, int startCol)
     return cnt;
 }
 
+/*
+REQUIRES: non-nullable inputs
+
+EFFECTS: count the number of consecutive keys on a row basis
+*/
 int countRow(State board[ROWS][COLS], int startRow, int startCol)
 {
     int cnt = 0;
@@ -601,6 +657,11 @@ int countRow(State board[ROWS][COLS], int startRow, int startCol)
     return cnt;
 }
 
+/*
+REQUIRES: non-nullable inputs
+
+EFFECTS: count the number of consecutive keys on a diagonal basis
+*/
 int countDiag(State board[ROWS][COLS], int startRow, int startCol)
 {
     int cnt = 0;
@@ -617,6 +678,11 @@ int countDiag(State board[ROWS][COLS], int startRow, int startCol)
     return cnt;
 }
 
+/*
+REQUIRES: non-nullable inputs
+
+EFFECTS: count the number of consecutive keys on a diagonal basis
+*/
 int countDiagb(State board[ROWS][COLS], int startRow, int startCol)
 {
     int cnt = 0;
@@ -633,6 +699,11 @@ int countDiagb(State board[ROWS][COLS], int startRow, int startCol)
     return cnt;
 }
 
+/*
+REQUIRES: nothing
+
+EFFECTS: determine the winner of the game
+*/
 int win(State board[ROWS][COLS])
 {
     if (boardFull(board))
@@ -664,10 +735,21 @@ int win(State board[ROWS][COLS])
     return 0;
 }
 
+/*
+REQUIRES: valid move
+
+EFFECTS: assign move to the computer
+*/
 void computermove(State arr[ROWS][COLS], position move)
 {
     arr[move.row][move.col] = BOT;
 }
+
+/*
+REQUIRES: nothing
+
+EFFECTS: implement the game
+*/
 int run()
 {
     printf("For player vs player type 0\nFor player vs computer type 1\n");
@@ -773,102 +855,4 @@ int run()
 int main()
 {
     run();
-    // printf("For player vs player type 0\nFor player vs computer type 1\n");
-
-    // int gameType = 0;
-
-    // scanf("%d", &gameType);
-
-    // print_rules();
-    // State matrix[ROWS][COLS] = {0};
-    // State key = 1;
-    // State ONE =1;
-    // State TWO = 2;
-    
-    // if (gameType == 0)
-    // {
-    //     display(matrix);
-    //     enterNames();
-    //     key = coinToss();
-    //     while (!(check(matrix, ONE) || check(matrix, TWO) || tieFull(matrix)))
-    //     {
-    //         printf("%s, your turn!\n", players[key- 1]);
-    //         printf("Token: %d \n", key);
-
-    //         playerSelect(matrix,key);
-
-    //         printf("\n\n");
-
-    //         display(matrix);
-
-    //         if(key == PLAYER) key = BOT;
-    //         else key = PLAYER;
-    //     }
-    //     if (check(matrix, ONE))
-    //     {
-    //         printf("\n\n%s wins!\n\n", players[0]);
-    //     }
-    //     if (check(matrix, TWO))
-    //     {
-    //         printf("\n\n%s wins!\n\n", players[1]);
-    //     }
-    //     if (tieFull(matrix))
-    //     {
-    //         tieTime();
-    //     }
-
-    //     system("pause");
-    // }
-    // else
-    // {
-    //      printf("\nDifficulty:\n\nFor easy type 0\nFor medium type 1\nFor hard type 2\n");
-
-    //     int difficulty = 0;
-    //     scanf("%d", &difficulty);
-
-    //     switch (difficulty)
-    //     {
-    //     case 0:
-    //         depthChanger = -1;
-    //         break;
-    //     case 1:
-    //         depthChanger = 0;
-    //         break;
-    //     case 2:
-    //         depthChanger = 7;
-    //         break;
-        
-    //     default:
-    //         break;
-    //     }
-    //     srand(time(NULL));
-    //     int run = 1;
-    //     while (run)
-    //     {
-    //         playerSelect(matrix,key);
-    //         display(matrix);
-    //         if (win(matrix))
-    //         {
-    //             run = 0;
-    //             break;
-    //         }
-    //         computermove(matrix, findBestmove(matrix));
-    //         display(matrix);
-    //         if (win(matrix))
-    //         {
-    //             run = 0;
-    //             break;
-    //         }
-    //     }
-    //     if (win(matrix) == PLAYER)
-    //     {
-    //         printf("PLAYER WON!\n");
-    //     }
-    //     else if (win(matrix) == BOT)
-    //         printf("COMPUTER WON!\n");
-    //     else if (win(matrix) == -1)
-    //         printf("DRAW\n");
-    // }
-
-    // return 0;
 }
