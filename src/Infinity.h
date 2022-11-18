@@ -55,3 +55,4 @@ int countDiag(State board[ROWS][COLS], int startRow, int startCol);
 int countDiagb(State board[ROWS][COLS], int startRow, int startCol);
 int win(State board[ROWS][COLS]);
 void computermove(State arr[ROWS][COLS], position move);
+int run();
