@@ -706,8 +706,7 @@ void computermove(State arr[ROWS][COLS], position move)
 {
     arr[move.row][move.col] = BOT;
 }
-
-int main()
+int run()
 {
     printf("For player vs player type 0\nFor player vs computer type 1\n");
 
@@ -807,4 +806,107 @@ int main()
     }
 
     return 0;
+}
+
+int main()
+{
+    run();
+    // printf("For player vs player type 0\nFor player vs computer type 1\n");
+
+    // int gameType = 0;
+
+    // scanf("%d", &gameType);
+
+    // print_rules();
+    // State matrix[ROWS][COLS] = {0};
+    // State key = 1;
+    // State ONE =1;
+    // State TWO = 2;
+    
+    // if (gameType == 0)
+    // {
+    //     display(matrix);
+    //     enterNames();
+    //     key = coinToss();
+    //     while (!(check(matrix, ONE) || check(matrix, TWO) || tieFull(matrix)))
+    //     {
+    //         printf("%s, your turn!\n", players[key- 1]);
+    //         printf("Token: %d \n", key);
+
+    //         playerSelect(matrix,key);
+
+    //         printf("\n\n");
+
+    //         display(matrix);
+
+    //         if(key == PLAYER) key = BOT;
+    //         else key = PLAYER;
+    //     }
+    //     if (check(matrix, ONE))
+    //     {
+    //         printf("\n\n%s wins!\n\n", players[0]);
+    //     }
+    //     if (check(matrix, TWO))
+    //     {
+    //         printf("\n\n%s wins!\n\n", players[1]);
+    //     }
+    //     if (tieFull(matrix))
+    //     {
+    //         tieTime();
+    //     }
+
+    //     system("pause");
+    // }
+    // else
+    // {
+    //      printf("\nDifficulty:\n\nFor easy type 0\nFor medium type 1\nFor hard type 2\n");
+
+    //     int difficulty = 0;
+    //     scanf("%d", &difficulty);
+
+    //     switch (difficulty)
+    //     {
+    //     case 0:
+    //         depthChanger = -1;
+    //         break;
+    //     case 1:
+    //         depthChanger = 0;
+    //         break;
+    //     case 2:
+    //         depthChanger = 7;
+    //         break;
+        
+    //     default:
+    //         break;
+    //     }
+    //     srand(time(NULL));
+    //     int run = 1;
+    //     while (run)
+    //     {
+    //         playerSelect(matrix,key);
+    //         display(matrix);
+    //         if (win(matrix))
+    //         {
+    //             run = 0;
+    //             break;
+    //         }
+    //         computermove(matrix, findBestmove(matrix));
+    //         display(matrix);
+    //         if (win(matrix))
+    //         {
+    //             run = 0;
+    //             break;
+    //         }
+    //     }
+    //     if (win(matrix) == PLAYER)
+    //     {
+    //         printf("PLAYER WON!\n");
+    //     }
+    //     else if (win(matrix) == BOT)
+    //         printf("COMPUTER WON!\n");
+    //     else if (win(matrix) == -1)
+    //         printf("DRAW\n");
+    // }
+
+    // return 0;
 }
