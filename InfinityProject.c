@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <stdbool.h>
+
 // #include <conio.h>
 
 /*
@@ -44,12 +46,23 @@ Propt the user to re-enter a valid column index when the user enters:
 Handle invalid(NaN) input for placing balls: check
 
 
-*/typedef enum {
-    empty = 0,
-    player = 1,
-    bot = 2
-}State;
+*/
+typedef enum
+{
+    EMPTY = 0,
+    PLAYER = 1,
+    BOT = 2
+} State;
+
+typedef struct
+{
+    int row;
+    int col;
+} position;
+
 int hour = 0, minute = 0, second = 0;
+
+int depthChanger = 7;
 
 #define ROWS 6
 #define COLS 7
@@ -66,13 +79,20 @@ int selected = 0; // Current Player Column selection
 void createMatrix();
 void display();
 void enterNames();
-void coinToss();
-void selecting();
+State coinToss();
+void playerSelect();
 void add_token();
 int check();
 int tieFull();
 void tieTime();
-void replaceSpaces(char p[32]);
+void replaceSpaces();
+int evaluate();
+bool boardFull();
+int countCol();
+int countRow();
+int countDiag();
+int countDiagb();
+int win();
 
 /*
 REQUIRES:
@@ -81,6 +101,85 @@ EFFECTS:
  - Print the matrix with the current results
  - Display/Print the matrix with an indexed square design
 */
+
+// helper functions
+bool boardFull(State board[ROWS][COLS])
+{
+    for (int i = 0; i < ROWS; i++)
+    {
+        for (int j = 0; j < COLS; j++)
+        {
+            if (board[i][j] != EMPTY)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool inInterval(int x, int min, int max)
+{ // inclusive
+    if (x <= max && x >= min)
+    {
+        return true;
+    }
+    return false;
+}
+
+void randommove(State board[ROWS][COLS])
+{
+    int col;
+    do
+    {
+        col = rand() % 7;
+    } while (board[0][col] != EMPTY);
+
+    for (int i = ROWS - 1; i >= 0; i--)
+    {
+        if (board[i][col] == EMPTY)
+        {
+            board[i][col] = BOT;
+            return;
+        }
+    }
+}
+
+int max(int a, int b)
+{
+    if (a > b)
+        return a;
+    else
+        return b;
+}
+
+int min(int a, int b)
+{
+    if (a > b)
+        return b;
+    else
+        return a;
+}
+
+void legalmoves(State board[ROWS][COLS], position moves[COLS])
+{
+    int cnt = 0;
+    for (int i = 0; i < COLS; i++)
+    {
+        for (int j = ROWS - 1; j >= 0; j--)
+        {
+            if (board[j][i] == EMPTY)
+            {
+                moves[cnt].row = j;
+                moves[cnt].col = i;
+                cnt++;
+                if (cnt >= COLS)
+                    return;
+                break;
+            }
+        }
+    }
+}
 
 void display(State board[ROWS][COLS])
 {
@@ -129,16 +228,18 @@ EFFECTS:
  - Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time since rand() does not stick to the same value.
  - Be able to have two choices to choose for both players each in order to check who starts first.
 */
-void coinToss()
+State coinToss()
 {
+    State key;
     srand(time(NULL));
     int random = rand();
     printf("\nTossing A coin .....\n");
     if (random % 2 == 0)
-        token = 2;
+        key = 2;
     else
-        token = 1;
+        key = 1;
     printf("\n%s is the First to start!\n", players[token - 1]);
+    return key;
 }
 
 /*
@@ -149,7 +250,7 @@ EFFECTS:
  - Choose valid place to drop the ball in & get the time taken for each player
 */
 
-void selecting(State board[ROWS][COLS] )
+void playerSelect(State board[ROWS][COLS], State key)
 {
 
     clock_t start = clock();
@@ -165,13 +266,12 @@ void selecting(State board[ROWS][COLS] )
     // checks if the user entered a valid position
     if ((selected <= 6 && selected >= 0) && board[0][selected] == 0)
     {
-        add_token(board);
-        token = (token == 1) ? 2 : 1; // flipping the token after adding it
+        add_token(board, key);
     }
     else
     {
         printf("Invalid selection. Please select a column between 0 and 6");
-        selecting(board);
+        playerSelect(board,key);
     }
 
     clock_t end = clock();
@@ -189,14 +289,14 @@ EFFECTS:
  - drop the item into the matrix (gravity simulation)
  - by adding the token to the last available row
 */
-void add_token(State board[ROWS][COLS])
+void add_token(State board[ROWS][COLS], State key)
 {
     int curRow;
     for (curRow = ROWS - 1; curRow >= 0; curRow--)
     {
         if (board[curRow][selected] == 0)
         {
-            board[curRow][selected] = token;
+            board[curRow][selected] = key;
             break;
         }
     }
@@ -209,7 +309,7 @@ REQUIRES:
 EFFECTS:
  - Be able to check if the player won horizontally via incrementing the counter in case an index had a player input.
 */
-int CheckHorizontal(State board[ROWS][COLS],int token)
+int CheckHorizontal(State board[ROWS][COLS], int token)
 {
     int counter;
     for (int i = 0; i < ROWS; ++i)
@@ -236,7 +336,7 @@ EFFECTS:
  - Be able to check if the player won vertically via incrementing the counter in case an index had a player input.
 */
 
-int CheckVertical(State board[ROWS][COLS],int token)
+int CheckVertical(State board[ROWS][COLS], int token)
 {
     int counter;
     for (int j = 0; j < COLS; ++j)
@@ -264,7 +364,7 @@ EFFECTS:
  - Check if the player (1 or 2) won diagonally by counting the lines/direct diagonal coins of the same number
 */
 
-int CheckDiagonals(State board[ROWS][COLS],int token)
+int CheckDiagonals(State board[ROWS][COLS], int token)
 {
     int counter;
 
@@ -309,9 +409,9 @@ EFFECTS:
  - check if any player won through a horizontal, vertical or diagonal input
 */
 
-int check(State board[ROWS][COLS],int token)
+int check(State board[ROWS][COLS], int token)
 {
-    return CheckHorizontal(board,token) || CheckVertical(board,token) || CheckDiagonals(board,token);
+    return CheckHorizontal(board, token) || CheckVertical(board, token) || CheckDiagonals(board, token);
 }
 
 /*
@@ -369,7 +469,6 @@ void replaceSpaces(char p[32])
     }
 }
 
-
 /*
     REQUIRES:
     -Nothing
@@ -377,7 +476,8 @@ void replaceSpaces(char p[32])
     EFFECTS:
     -print the rules of the game
 */
-void print_rules() {
+void print_rules()
+{
     printf("Rules:\n");
     printf("1. The game board has seven columns and six rows.\n");
     printf("2. There are 21 red (number 1) and 21 yellow (number 2) tokens.\n");
@@ -394,37 +494,314 @@ void print_rules() {
     printf("Let's start playing\n");
 }
 
+int minmax(State arr[ROWS][COLS], int isMaximizing, int depth, int alpha, int beta)
+{
+    int score = evaluate(arr);
+    if (score == -100 || score == 100 || depth > depthChanger)
+        return score;
+    else if (boardFull(arr))
+        return 0;
+
+    position moves[COLS];
+    memset(moves, -1, sizeof(moves));
+
+    if (isMaximizing)
+    {
+        int best = -10000;
+        legalmoves(arr, moves);
+        for (int i = 0; i < COLS; i++)
+        {
+            if (moves[i].row != -1)
+            {
+                arr[moves[i].row][moves[i].col] = BOT;
+                int eval = minmax(arr, 0, depth + 1, alpha, beta);
+                best = max(best, eval);
+                arr[moves[i].row][moves[i].col] = EMPTY;
+                alpha = max(alpha, eval);
+                if (beta <= alpha)
+                    break;
+            }
+            else
+                break;
+        }
+        return best - depth;
+    }
+    else
+    {
+        int best = 10000;
+        legalmoves(arr, moves);
+        for (int i = 0; i < COLS; i++)
+        {
+            if (moves[i].row != -1)
+            {
+                arr[moves[i].row][moves[i].col] = PLAYER;
+                int eval = minmax(arr, 1, depth + 1, alpha, beta);
+                best = min(best, eval);
+                arr[moves[i].row][moves[i].col] = EMPTY;
+                beta = min(beta, eval);
+                if (beta <= alpha)
+                    break;
+            }
+            else
+                break;
+        }
+        return best + depth;
+    }
+}
+
+int evaluate(State arr[ROWS][COLS])
+{
+    int tmp = win(arr);
+    int scoreP = 0;
+    int scoreC = 0;
+    if (tmp == 2)
+        return 100;
+    else if (tmp == 1)
+        return -100;
+    else if (tmp == -1)
+        return 0;
+    else
+    {
+        for (int i = ROWS - 1; i >= 0; i--)
+        {
+            for (int j = 0; j < COLS; j++)
+            {
+                if (arr[i][j] == PLAYER)
+                {
+                    scoreP += countDiagb(arr, i, j);
+                    scoreP += countCol(arr, i, j);
+                    scoreP += countRow(arr, i, j);
+                    scoreP += countDiag(arr, i, j);
+                }
+                else if (arr[i][j] == BOT)
+                {
+                    scoreC += countDiagb(arr, i, j);
+                    scoreC += countCol(arr, i, j);
+                    scoreC += countRow(arr, i, j);
+                    scoreC += countDiag(arr, i, j);
+                }
+            }
+        }
+    }
+    return scoreC - scoreP;
+}
+
+position findBestmove(State arr[ROWS][COLS])
+{
+    int bestVal = -10000;
+    position bestMove;
+    position moves[COLS];
+    memset(moves, -1, sizeof(moves));
+
+    legalmoves(arr, moves);
+    for (int i = 0; i < COLS; i++)
+    {
+        if (moves[i].row != -1)
+        {
+            arr[moves[i].row][moves[i].col] = BOT;
+            int moveVal = minmax(arr, 0, 0, -10000000, 10000000);
+            if (moveVal > bestVal)
+            {
+                bestMove.row = moves[i].row;
+                bestMove.col = moves[i].col;
+                bestVal = moveVal;
+            }
+            arr[moves[i].row][moves[i].col] = EMPTY;
+        }
+    }
+    return bestMove;
+}
+int countCol(State board[ROWS][COLS], int startRow, int startCol)
+{
+    int cnt = 0;
+    int i = startRow;
+    while (board[i][startCol] == board[startRow][startCol])
+    {
+        cnt++;
+        i--;
+        if (i < 0)
+            return cnt;
+    }
+    return cnt;
+}
+
+int countRow(State board[ROWS][COLS], int startRow, int startCol)
+{
+    int cnt = 0;
+    int i = startCol;
+    while (board[startRow][i] == board[startRow][startCol])
+    {
+        cnt++;
+        i++;
+        if (i > COLS - 1)
+            return cnt;
+    }
+    return cnt;
+}
+
+int countDiag(State board[ROWS][COLS], int startRow, int startCol)
+{
+    int cnt = 0;
+    int row = startRow;
+    int col = startCol;
+    while (board[row][col] == board[startRow][startCol])
+    {
+        cnt++;
+        row--;
+        col++;
+        if (row < 0 || col > COLS - 1)
+            return cnt;
+    }
+    return cnt;
+}
+
+int countDiagb(State board[ROWS][COLS], int startRow, int startCol)
+{
+    int cnt = 0;
+    int row = startRow;
+    int col = startCol;
+    while (board[row][col] == board[startRow][startCol])
+    {
+        cnt++;
+        row--;
+        col--;
+        if (row < 0 || col < 0)
+            return cnt;
+    }
+    return cnt;
+}
+
+int win(State board[ROWS][COLS])
+{
+    if (boardFull(board))
+        return -1;
+    for (int i = ROWS; i >= 0; i--)
+    {
+        for (int j = 0; j < COLS; j++)
+        {
+            if (board[i][j] != EMPTY)
+            {
+                if (countCol(board, i, j) == 4 || countRow(board, i, j) == 4 || countDiag(board, i, j) == 4 || countDiagb(board, i, j) == 4)
+                {
+                    switch (board[i][j])
+                    {
+                    case PLAYER:
+                        return PLAYER;
+                        break;
+                    case BOT:
+                        return BOT;
+                        break;
+                    case EMPTY:
+                        continue;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+void computermove(State arr[ROWS][COLS], position move)
+{
+    arr[move.row][move.col] = BOT;
+}
+
 int main()
 {
-    State matrix[ROWS][COLS] ={0};
+    printf("For player vs player type 0\nFor player vs computer type 1\n");
+
+    int gameType = 0;
+
+    scanf("%d", &gameType);
+
     print_rules();
-    display(matrix);
-    enterNames();
-    coinToss();
-
-    while (!(check(matrix,1) || check(matrix,2) || tieFull(matrix)))
+    State matrix[ROWS][COLS] = {0};
+    State key = 1;
+    
+    if (gameType == 0)
     {
-        printf("%s, your turn!\n", players[token - 1]);
-
-        selecting(matrix);
-
-        printf("\n\n");
-
         display(matrix);
+        enterNames();
+        key = coinToss();
+        while (!(check(matrix, 1) || check(matrix, 2) || tieFull(matrix)))
+        {
+            printf("%s, your turn!\n", players[token - 1]);
+
+            playerSelect(matrix,key);
+
+            printf("\n\n");
+
+            display(matrix);
+
+            if(key == PLAYER) key = BOT;
+            else key = PLAYER;
+        }
+        if (check(matrix, 1))
+        {
+            printf("\n\n%s wins!\n\n", players[0]);
+        }
+        if (check(matrix, 2))
+        {
+            printf("\n\n%s wins!\n\n", players[1]);
+        }
+        if (tieFull(matrix))
+        {
+            tieTime();
+        }
+
+        system("pause");
     }
-    if (check(matrix,1))
+    else
     {
-        printf("\n\n%s wins!\n\n", players[0]);
-    }
-    if (check(matrix,2))
-    {
-        printf("\n\n%s wins!\n\n", players[1]);
-    }
-    if (tieFull(matrix))
-    {
-        tieTime();
+         printf("\nDifficulty:\n\nFor easy type 0\nFor medium type 1\nFor hard type 2\n");
+
+        int difficulty = 0;
+        scanf("%d", &difficulty);
+
+        switch (difficulty)
+        {
+        case 0:
+            depthChanger = -1;
+            break;
+        case 1:
+            depthChanger = 0;
+            break;
+        case 2:
+            depthChanger = 7;
+            break;
+        
+        default:
+            break;
+        }
+        srand(time(NULL));
+        int run = 1;
+        while (run)
+        {
+            playerSelect(matrix,key);
+            display(matrix);
+            if (win(matrix))
+            {
+                run = 0;
+                break;
+            }
+            computermove(matrix, findBestmove(matrix));
+            display(matrix);
+            if (win(matrix))
+            {
+                run = 0;
+                break;
+            }
+        }
+        if (win(matrix) == PLAYER)
+        {
+            printf("PLAYER WON!\n");
+        }
+        else if (win(matrix) == BOT)
+            printf("COMPUTER WON!\n");
+        else if (win(matrix) == -1)
+            printf("DRAW\n");
     }
 
-    system("pause");
     return 0;
 }
