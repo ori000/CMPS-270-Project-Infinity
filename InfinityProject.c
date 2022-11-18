@@ -61,7 +61,9 @@ typedef struct
 } position;
 
 int hour = 0, minute = 0, second = 0;
+
 int depthChanger = 7;
+
 #define ROWS 6
 #define COLS 7
 
@@ -77,7 +79,7 @@ int selected = 0; // Current Player Column selection
 void createMatrix();
 void display();
 void enterNames();
-void coinToss();
+State coinToss();
 void playerSelect();
 void add_token();
 int check();
@@ -226,16 +228,18 @@ EFFECTS:
  - Toss A coin Randomly to determine which player starts the match, srand seeds rand() every time since rand() does not stick to the same value.
  - Be able to have two choices to choose for both players each in order to check who starts first.
 */
-void coinToss()
+State coinToss()
 {
+    State key;
     srand(time(NULL));
     int random = rand();
     printf("\nTossing A coin .....\n");
     if (random % 2 == 0)
-        token = 2;
+        key = 2;
     else
-        token = 1;
+        key = 1;
     printf("\n%s is the First to start!\n", players[token - 1]);
+    return key;
 }
 
 /*
@@ -287,7 +291,7 @@ EFFECTS:
 */
 void add_token(State board[ROWS][COLS], State key)
 {
-    State curRow;
+    int curRow;
     for (curRow = ROWS - 1; curRow >= 0; curRow--)
     {
         if (board[curRow][selected] == 0)
@@ -307,7 +311,7 @@ EFFECTS:
 */
 int CheckHorizontal(State board[ROWS][COLS], int token)
 {
-    State counter;
+    int counter;
     for (int i = 0; i < ROWS; ++i)
     {
         for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
@@ -334,7 +338,7 @@ EFFECTS:
 
 int CheckVertical(State board[ROWS][COLS], int token)
 {
-    State counter;
+    int counter;
     for (int j = 0; j < COLS; ++j)
     {
         for (int i = 0; i < 3; ++i) // 3 is the number of ways of connecting four tokens in one cloumn
@@ -362,7 +366,7 @@ EFFECTS:
 
 int CheckDiagonals(State board[ROWS][COLS], int token)
 {
-    State counter;
+    int counter;
 
     for (int i = 0; i < ROWS; i++)
     {
@@ -438,7 +442,7 @@ EFFECTS:
 */
 int tieFull(State board[ROWS][COLS])
 {
-    State countEntries = 0;
+    int countEntries = 0;
     for (int i = 0; i < ROWS; i++)
     {
         for (int j = 0; j < COLS; j++)
@@ -713,13 +717,13 @@ int main()
 
     print_rules();
     State matrix[ROWS][COLS] = {0};
-    State key;
+    State key = 1;
     
     if (gameType == 0)
     {
         display(matrix);
         enterNames();
-        coinToss();
+        key = coinToss();
         while (!(check(matrix, 1) || check(matrix, 2) || tieFull(matrix)))
         {
             printf("%s, your turn!\n", players[token - 1]);
@@ -750,7 +754,26 @@ int main()
     }
     else
     {
+         printf("\nDifficulty:\n\nFor easy type 0\nFor medium type 1\nFor hard type 2\n");
 
+        int difficulty = 0;
+        scanf("%d", &difficulty);
+
+        switch (difficulty)
+        {
+        case 0:
+            depthChanger = -1;
+            break;
+        case 1:
+            depthChanger = 0;
+            break;
+        case 2:
+            depthChanger = 7;
+            break;
+        
+        default:
+            break;
+        }
         srand(time(NULL));
         int run = 1;
         while (run)
