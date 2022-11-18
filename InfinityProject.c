@@ -287,7 +287,7 @@ EFFECTS:
 */
 void add_token(State board[ROWS][COLS], State key)
 {
-    int curRow;
+    State curRow;
     for (curRow = ROWS - 1; curRow >= 0; curRow--)
     {
         if (board[curRow][selected] == 0)
@@ -307,7 +307,7 @@ EFFECTS:
 */
 int CheckHorizontal(State board[ROWS][COLS], int token)
 {
-    int counter;
+    State counter;
     for (int i = 0; i < ROWS; ++i)
     {
         for (int j = 0; j < 4; ++j) // 4 is the number of ways of connecting four tokens in one row
@@ -334,7 +334,7 @@ EFFECTS:
 
 int CheckVertical(State board[ROWS][COLS], int token)
 {
-    int counter;
+    State counter;
     for (int j = 0; j < COLS; ++j)
     {
         for (int i = 0; i < 3; ++i) // 3 is the number of ways of connecting four tokens in one cloumn
@@ -362,7 +362,7 @@ EFFECTS:
 
 int CheckDiagonals(State board[ROWS][COLS], int token)
 {
-    int counter;
+    State counter;
 
     for (int i = 0; i < ROWS; i++)
     {
@@ -438,7 +438,7 @@ EFFECTS:
 */
 int tieFull(State board[ROWS][COLS])
 {
-    int countEntries = 0;
+    State countEntries = 0;
     for (int i = 0; i < ROWS; i++)
     {
         for (int j = 0; j < COLS; j++)
